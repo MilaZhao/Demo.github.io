@@ -3,177 +3,310 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>康寶廚藝時代 Knorr Pro v26</title>
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
+    <title>康寶廚藝時代 Knorr Pro v40</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0..1,0" />
     <style>
-        /* --- 1. Design Tokens --- */
+        /* =========================================
+           🎨 DESIGN TOKENS SYSTEM
+           ========================================= */
         :root {
-            --primary: #00652B; --primary-light: #E6F0EA;
-            --secondary: #FF5700; --secondary-light: #FFF0E5;
-            --bg-body: #F7F9F8; --surface: #FFFFFF;
-            --text-main: #2D3330; --text-body: #4A524F; --text-muted: #8C9692;
+            /* --- 1. Color Palette --- */
+            --color-primary: #00652B;
+            --color-primary-dark: #004d20;
+            --color-primary-light: #E6F0EA;
+            --color-secondary: #FF5700;
+            --color-secondary-light: #FFF0E5;
             
-            --sp-xs: 4px; --sp-sm: 8px; --sp-md: 16px; --sp-lg: 24px;
-            --bottom-nav-height: 80px;
+            --color-success: #4CAF50;
+            --color-warning: #FFD700;
+            --color-danger: #d32f2f;
+            --color-danger-bg: #ffebee;
+            --color-info: #E3F2FD;
+            --color-info-text: #1565C0;
+
+            /* Social Colors */
+            --color-line: #06C755;
+            --color-apple: #000000;
+
+            --color-bg-body: #F7F9F8;
+            --color-surface: #FFFFFF;
+            --color-surface-muted: #F9F9F9;
+            --color-border: #EEEEEE;
+            --color-text-main: #2D3330;
+            --color-text-body: #4A524F;
+            --color-text-muted: #8C9692;
+            --color-text-light: #FFFFFF;
+            --color-text-placeholder: #CCCCCC;
+
+            /* --- 2. Spacing Scale --- */
+            --space-2xs: 4px;
+            --space-xs: 8px;
+            --space-sm: 12px;
+            --space-md: 16px;
+            --space-lg: 24px;
+            --space-xl: 32px;
+            --space-2xl: 60px;
+
+            /* --- 3. Typography Scale --- */
+            --text-2xs: 10px;
+            --text-xs: 12px;
+            --text-sm: 14px;
+            --text-base: 16px;
+            --text-lg: 18px;
+            --text-xl: 20px;
+            --text-2xl: 22px;
+            --text-3xl: 24px;
+            --font-main: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+
+            /* --- 4. Border Radius --- */
+            --radius-sm: 8px;
+            --radius-md: 12px;
+            --radius-lg: 16px;
+            --radius-xl: 24px;
+            --radius-full: 9999px;
+
+            /* --- 5. Elevation --- */
             --shadow-sm: 0 2px 8px rgba(0,0,0,0.04);
             --shadow-md: 0 8px 24px rgba(0,101,43,0.08);
+            --shadow-lg: 0 12px 32px rgba(0,0,0,0.12);
             --shadow-up: 0 -4px 12px rgba(0,0,0,0.08);
-            --radius-lg: 16px;
+
+            /* --- 6. Layout Constants --- */
+            --header-height: 56px;
+            --bottom-nav-height: 80px;
+            --z-header: 90;
+            --z-modal: 2000;
+            --z-toast: 3000;
         }
 
+        /* =========================================
+           CORE STYLES
+           ========================================= */
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-        body { background: var(--bg-body); color: var(--text-main); font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; padding-bottom: var(--bottom-nav-height); line-height: 1.6; }
+        body { 
+            background: var(--color-bg-body); 
+            color: var(--color-text-main); 
+            font-family: var(--font-main); 
+            padding-bottom: var(--bottom-nav-height); 
+            line-height: 1.6; 
+        }
 
-        /* --- 2. Shared Components --- */
-        header { background: var(--surface); position: sticky; top: 0; z-index: 90; box-shadow: var(--shadow-sm); }
-        .header-top { background: var(--primary); padding: 8px 16px; height: 56px; display: flex; align-items: center; gap: 16px; color: white; }
-        .search-bar { flex: 1; background: rgba(255,255,255,0.15); border-radius: 30px; height: 36px; display: flex; align-items: center; padding: 0 16px; font-size: 14px; }
-        .icon-btn { cursor: pointer; color: white; }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            transition: font-variation-settings 0.3s ease;
+        }
 
-        .tab-bar { padding: 12px 0; background: var(--surface); border-bottom: 1px solid #eee; }
-        .scrolling-wrapper { display: flex; overflow-x: auto; gap: 8px; padding: 0 16px; scrollbar-width: none; }
-        .tab-chip { padding: 6px 16px; border-radius: 20px; font-size: 13px; font-weight: 500; color: var(--text-muted); background: #F5F5F5; white-space: nowrap; transition: 0.2s; cursor: pointer; border: 1px solid transparent; }
-        .tab-chip.active { background: var(--primary-light); color: var(--primary); font-weight: 700; border-color: rgba(0,101,43,0.2); }
+        /* --- Components: Header --- */
+        header { background: var(--color-surface); position: sticky; top: 0; z-index: var(--z-header); box-shadow: var(--shadow-sm); }
+        .header-top { background: var(--color-primary); padding: var(--space-xs) var(--space-md); height: var(--header-height); display: flex; align-items: center; gap: var(--space-md); color: var(--color-text-light); }
+        .search-bar { flex: 1; background: rgba(255,255,255,0.15); border-radius: 30px; height: 36px; display: flex; align-items: center; padding: 0 var(--space-md); font-size: var(--text-sm); }
+        .icon-btn { cursor: pointer; color: var(--color-text-light); }
 
-        .section-header { padding: 24px 16px 12px; display: flex; justify-content: space-between; align-items: center; }
-        .section-title { font-size: 18px; font-weight: 700; display: flex; align-items: center; gap: 8px; }
-        .card-scroll-container { display: flex; overflow-x: auto; gap: 16px; padding: 0 16px 16px; scrollbar-width: none; }
+        /* --- Components: Tabs --- */
+        .tab-bar { padding: var(--space-sm) 0; background: var(--color-surface); border-bottom: 1px solid var(--color-border); }
+        .scrolling-wrapper { display: flex; overflow-x: auto; gap: var(--space-xs); padding: 0 var(--space-md); scrollbar-width: none; }
+        .tab-chip { padding: 6px var(--space-md); border-radius: 20px; font-size: 13px; font-weight: 500; color: var(--color-text-muted); background: var(--color-surface-muted); white-space: nowrap; transition: 0.2s; cursor: pointer; border: 1px solid transparent; }
+        .tab-chip.active { background: var(--color-primary-light); color: var(--color-primary); font-weight: 700; border-color: rgba(0,101,43,0.2); }
+
+        /* --- Components: Sections --- */
+        .section-header { padding: var(--space-lg) var(--space-md) var(--space-sm); display: flex; justify-content: space-between; align-items: center; }
+        .section-title { font-size: var(--text-lg); font-weight: 700; display: flex; align-items: center; gap: var(--space-xs); }
+        .card-scroll-container { display: flex; overflow-x: auto; gap: var(--space-md); padding: 0 var(--space-md) var(--space-md); scrollbar-width: none; }
         
         .fade-in { animation: fadeIn 0.3s ease-out forwards; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* --- 3. Cards & Lists --- */
-        .card { background: var(--surface); border-radius: 16px; overflow: hidden; box-shadow: var(--shadow-sm); display: flex; flex-direction: column; cursor: pointer; position: relative; min-width: 220px; }
+        /* --- Components: Cards (Standard) --- */
+        .card { background: var(--color-surface); border-radius: var(--radius-lg); overflow: hidden; box-shadow: var(--shadow-sm); display: flex; flex-direction: column; cursor: pointer; position: relative; min-width: 220px; }
         .card:active { transform: scale(0.98); transition: 0.1s; }
         .card-img-wrapper { position: relative; padding-top: 60%; background: #eee; }
         .card-img { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; }
-        .card-badge { position: absolute; top: 8px; left: 8px; background: rgba(0,0,0,0.7); backdrop-filter: blur(4px); color: white; font-size: 10px; font-weight: 700; padding: 4px 8px; border-radius: 4px; }
-        .card-content { padding: 12px; flex: 1; display: flex; flex-direction: column; }
-        .card-title { font-weight: 700; font-size: 15px; margin-bottom: 8px; line-height: 1.3; }
+        .card-badge { position: absolute; top: 8px; left: 8px; background: rgba(0,0,0,0.7); backdrop-filter: blur(4px); color: white; font-size: var(--text-2xs); font-weight: 700; padding: 4px 8px; border-radius: 4px; z-index: 2; }
+        .card-content { padding: var(--space-sm); flex: 1; display: flex; flex-direction: column; }
+        .card-title { font-weight: 700; font-size: 15px; margin-bottom: var(--space-xs); line-height: 1.3; }
         .card-meta { display: flex; gap: 4px; flex-wrap: wrap; margin-top: auto; }
-        .meta-tag { font-size: 10px; background: #F0F2F1; padding: 2px 6px; border-radius: 4px; color: #666; display: flex; align-items: center; gap: 2px; }
+        .meta-tag { font-size: var(--text-2xs); background: #F0F2F1; padding: 2px 6px; border-radius: 4px; color: #666; display: flex; align-items: center; gap: 2px; }
+        .card-bottom-info { margin-top: 8px; border-top: 1px solid #f5f5f5; padding-top: 6px; font-size: 10px; color: var(--color-text-muted); display: flex; align-items: center; gap: 4px; }
 
-        .list-card { background: var(--surface); margin: 0 16px 12px; padding: 16px; border-radius: 12px; box-shadow: var(--shadow-sm); display: flex; gap: 16px; align-items: flex-start; cursor: pointer; position: relative; }
-        .list-card-img { width: 80px; height: 80px; border-radius: 8px; object-fit: cover; background: #eee; flex-shrink: 0; }
-        .rank-badge { position: absolute; top: 0; left: 0; width: 24px; height: 24px; border-radius: 12px 0 12px 0; display: flex; justify-content: center; align-items: center; font-weight: 900; font-size: 12px; color: #fff; z-index: 2; }
-        .rank-1 { background: #FFD700; color: #333; }
+        /* --- Components: List Cards --- */
+        .list-card { background: var(--color-surface); margin: 0 var(--space-md) var(--space-sm); padding: var(--space-md); border-radius: var(--radius-md); box-shadow: var(--shadow-sm); display: flex; gap: var(--space-md); align-items: flex-start; cursor: pointer; position: relative; }
+        .list-card-img { width: 80px; height: 80px; border-radius: var(--radius-sm); object-fit: cover; background: #eee; flex-shrink: 0; }
+        
+        .rank-badge { position: absolute; top: 0; left: 0; width: 24px; height: 24px; border-radius: var(--radius-md) 0 var(--radius-md) 0; display: flex; justify-content: center; align-items: center; font-weight: 900; font-size: var(--text-xs); color: #fff; z-index: 2; }
+        .rank-1 { background: var(--color-warning); color: #333; }
         .rank-2 { background: #C0C0C0; color: #333; }
         .rank-3 { background: #CD7F32; }
         
-        .ranking-tabs { display: flex; border-bottom: 1px solid #eee; margin-bottom: 12px; }
-        .ranking-tab { flex: 1; text-align: center; padding: 12px; font-size: 14px; color: var(--text-muted); cursor: pointer; border-bottom: 2px solid transparent; }
-        .ranking-tab.active { color: var(--primary); font-weight: 700; border-color: var(--primary); }
-
-        /* --- 4. Recipe Page Styles --- */
-        .chef-banner { margin: 16px; background: linear-gradient(135deg, #1a1a1a, #333); border-radius: 16px; padding: 20px; color: white; display: flex; align-items: center; justify-content: space-between; overflow: hidden; position: relative; box-shadow: var(--shadow-md); cursor: pointer; }
-        .chef-banner::after { content:''; position:absolute; right:-20px; top:-20px; width:100px; height:100px; background:var(--secondary); border-radius:50%; opacity:0.15; }
+        .ranking-meta-row { display: flex; align-items: center; gap: 6px; font-size: 11px; color: var(--color-text-muted); margin-top: 6px; }
         
-        .strategy-cta-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; padding: 0 16px 8px; margin-bottom: 8px; }
-        .strategy-btn { background: var(--surface); border-radius: 16px; padding: 16px; display: flex; flex-direction: column; align-items: center; gap: 8px; box-shadow: var(--shadow-sm); cursor: pointer; border: 1px solid #f0f0f0; transition:0.1s;}
-        .strategy-btn:active { transform: scale(0.98); background: #fafafa; }
-        .btn-icon-circle { width: 40px; height: 40px; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 24px; margin-bottom: 4px; }
-        .btn-change .btn-icon-circle { background: #E3F2FD; color: #1565C0; }
-        .btn-fast .btn-icon-circle { background: #FFF3E0; color: #E65100; }
-        .recipe-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; padding: 0 16px 24px; }
+        .btn-save-mini { width: 32px; height: 32px; border-radius: 50%; border: 1.5px solid #ddd; background: white; display: flex; justify-content: center; align-items: center; color: #ccc; cursor: pointer; transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); z-index: 5; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+        .card-save-pos { position: absolute; top: 8px; right: 8px; }
+        .list-save-pos { position: absolute; bottom: 12px; right: 12px; }
+        .btn-save-mini .material-symbols-outlined { font-size: 18px; color: #999; transition: color 0.3s; }
+        .btn-save-mini.active { border-color: var(--color-secondary); background: white; transform: scale(1.15); box-shadow: 0 4px 12px rgba(255, 87, 0, 0.25); }
+        .btn-save-mini.active .material-symbols-outlined { color: var(--color-secondary); font-variation-settings: 'FILL' 1; }
+        .btn-save-mini:active { transform: scale(0.95); }
 
-        /* --- 5. Scan & Profile Page --- */
+        .ranking-tabs { display: flex; border-bottom: 1px solid var(--color-border); margin-bottom: var(--space-sm); }
+        .ranking-tab { flex: 1; text-align: center; padding: var(--space-sm); font-size: var(--text-sm); color: var(--color-text-muted); cursor: pointer; border-bottom: 2px solid transparent; }
+        .ranking-tab.active { color: var(--color-primary); font-weight: 700; border-color: var(--color-primary); }
+
+        /* --- Components: Banners & Buttons --- */
+        .chef-banner { margin: var(--space-md); background: linear-gradient(135deg, #1a1a1a, #333); border-radius: var(--radius-lg); padding: 20px; color: white; display: flex; align-items: center; justify-content: space-between; overflow: hidden; position: relative; box-shadow: var(--shadow-md); cursor: pointer; }
+        .chef-banner::after { content:''; position:absolute; right:-20px; top:-20px; width:100px; height:100px; background:var(--color-secondary); border-radius:50%; opacity:0.15; }
+        
+        .strategy-cta-grid { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-sm); padding: 0 var(--space-md) var(--space-xs); margin-bottom: var(--space-xs); }
+        .strategy-btn { background: var(--color-surface); border-radius: var(--radius-lg); padding: var(--space-md); display: flex; flex-direction: column; align-items: center; gap: var(--space-xs); box-shadow: var(--shadow-sm); cursor: pointer; border: 1px solid #f0f0f0; transition:0.1s;}
+        .strategy-btn:active { transform: scale(0.98); background: #fafafa; }
+        .btn-icon-circle { width: 40px; height: 40px; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: var(--text-3xl); margin-bottom: 4px; }
+        .btn-change .btn-icon-circle { background: var(--color-info); color: var(--color-info-text); }
+        .btn-fast .btn-icon-circle { background: var(--color-secondary-light); color: var(--color-secondary); }
+        .recipe-grid { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-md); padding: 0 var(--space-md) var(--space-lg); }
+
+        /* --- Components: Scan & Profile --- */
         .scan-container { height: calc(100vh - 80px); background: #121212; display: flex; flex-direction: column; position: relative; }
         .scan-viewfinder { flex: 1; display: flex; justify-content: center; align-items: center; position: relative; }
-        .scan-frame { width: 260px; height: 260px; border: 2px solid var(--secondary); border-radius: 24px; position: relative; box-shadow: 0 0 0 4000px rgba(0,0,0,0.7); }
-        .scan-frame::after { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; background: var(--secondary); box-shadow: 0 0 10px var(--secondary); animation: scanMove 2s infinite linear; }
+        .scan-frame { width: 260px; height: 260px; border: 2px solid var(--color-secondary); border-radius: var(--radius-xl); position: relative; box-shadow: 0 0 0 4000px rgba(0,0,0,0.7); }
+        .scan-frame::after { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; background: var(--color-secondary); box-shadow: 0 0 10px var(--color-secondary); animation: scanMove 2s infinite linear; }
         @keyframes scanMove { 0% { top: 0; } 50% { top: 100%; } 100% { top: 0; } }
         .scan-controls { position: absolute; top: 20px; right: 20px; z-index: 10; }
-        .toggle-btn { background: rgba(255,255,255,0.2); backdrop-filter: blur(10px); padding: 8px 16px; border-radius: 20px; color: white; font-size: 12px; font-weight: 600; display: flex; align-items: center; gap: 8px; cursor: pointer; }
+        .toggle-btn { background: rgba(255,255,255,0.2); backdrop-filter: blur(10px); padding: 8px 16px; border-radius: 20px; color: white; font-size: var(--text-xs); font-weight: 600; display: flex; align-items: center; gap: 8px; cursor: pointer; }
         .toggle-switch { width: 32px; height: 18px; background: rgba(0,0,0,0.3); border-radius: 10px; position: relative; transition: 0.3s; border:1px solid rgba(255,255,255,0.5); }
-        .toggle-switch.on { background: var(--secondary); border-color:var(--secondary); }
+        .toggle-switch.on { background: var(--color-secondary); border-color:var(--color-secondary); }
         .toggle-switch::after { content:''; position: absolute; top: 2px; left: 2px; width: 12px; height: 12px; background: white; border-radius: 50%; transition: 0.3s; }
         .toggle-switch.on::after { transform: translateX(14px); }
         .rewards-panel { background: white; border-radius: 24px 24px 0 0; padding: 24px 20px; z-index: 10; }
         .progress-header { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 8px; }
         .progress-track { height: 8px; background: #eee; border-radius: 4px; overflow: hidden; margin-bottom: 20px; margin-top: 8px; }
-        .progress-fill { width: 85%; height: 100%; background: linear-gradient(90deg, var(--primary), #4CAF50); border-radius: 4px; }
+        .progress-fill { width: 85%; height: 100%; background: linear-gradient(90deg, var(--color-primary), var(--color-success)); border-radius: 4px; }
         .instant-rewards { display: flex; gap: 12px; }
-        .reward-card { flex: 1; border: 1px solid #eee; padding: 12px; border-radius: 12px; text-align: center; cursor: pointer; transition: 0.2s; }
-        .reward-card:active { border-color: var(--primary); background: var(--primary-light); }
-        .toast { position: absolute; bottom: 200px; left: 50%; transform: translateX(-50%); background: rgba(0, 101, 43, 0.95); color: white; padding: 12px 24px; border-radius: 30px; font-size: 14px; font-weight: 600; display: flex; align-items: center; gap: 8px; opacity: 0; transition: 0.3s; pointer-events: none; z-index: 20; box-shadow: 0 4px 12px rgba(0,0,0,0.2); }
+        .reward-card { flex: 1; border: 1px solid #eee; padding: 12px; border-radius: var(--radius-md); text-align: center; cursor: pointer; transition: 0.2s; }
+        .reward-card:active { border-color: var(--color-primary); background: var(--color-primary-light); }
+        .toast { position: absolute; bottom: 200px; left: 50%; transform: translateX(-50%); background: rgba(0, 101, 43, 0.95); color: white; padding: 12px 24px; border-radius: 30px; font-size: var(--text-sm); font-weight: 600; display: flex; align-items: center; gap: 8px; opacity: 0; transition: 0.3s; pointer-events: none; z-index: var(--z-toast); box-shadow: 0 4px 12px rgba(0,0,0,0.2); }
         .toast.show { opacity: 1; transform: translateX(-50%) translateY(-10px); }
 
-        /* Profile Styles */
-        .profile-header { background: var(--primary); padding: 32px 20px 60px; color: white; border-radius: 0 0 24px 24px; position: relative; }
-        .profile-user { display: flex; align-items: center; gap: 16px; margin-bottom: 24px; }
-        .profile-avatar { width: 64px; height: 64px; background: white; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 28px; font-weight: 700; color: var(--primary); border: 3px solid rgba(255,255,255,0.3); }
-        .profile-card { background: white; border-radius: 16px; padding: 20px; margin: -40px 16px 16px; box-shadow: var(--shadow-md); }
-        .barcode-area { text-align: center; padding: 16px 0; border-bottom: 1px dashed #eee; margin-bottom: 16px; }
-        .barcode-img { height: 60px; opacity: 0.8; }
-        .menu-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-        .menu-btn { background: #f9f9f9; padding: 16px; border-radius: 12px; text-align: center; cursor: pointer; }
-        .menu-btn-icon { font-size: 28px; margin-bottom: 8px; color: var(--primary); }
-        .support-btn { background: #E3F2FD; color: #1565C0; padding: 16px; border-radius: 12px; display: flex; justify-content: center; align-items: center; gap: 8px; margin: 0 16px; cursor: pointer; font-weight: 700; }
+        /* --- Components: Profile --- */
+        .profile-bg { background: linear-gradient(180deg, var(--color-primary) 0%, var(--color-primary-dark) 100%); padding: var(--space-xl) 20px 80px; color: white; border-radius: 0 0 32px 32px; }
+        .profile-user { display: flex; align-items: center; gap: var(--space-md); margin-bottom: var(--space-lg); }
+        .profile-avatar { width: 72px; height: 72px; background: white; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 32px; font-weight: 700; color: var(--color-primary); border: 4px solid rgba(255,255,255,0.2); box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+        .profile-card { background: white; border-radius: 20px; padding: 24px; margin: -60px var(--space-md) 20px; box-shadow: var(--shadow-md); position: relative; }
+        
+        .menu-grid { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-md); margin-bottom: var(--space-md); }
+        .menu-btn { background: #ffffff; border: 1px solid #f0f0f0; padding: 20px; border-radius: var(--radius-lg); text-align: center; cursor: pointer; transition: 0.2s; box-shadow: var(--shadow-sm); display: flex; flex-direction: column; align-items: center; gap: var(--space-xs); }
+        .menu-btn:active { transform: scale(0.96); background: var(--color-surface-muted); }
+        .menu-btn-icon { width: 48px; height: 48px; border-radius: 50%; background: var(--color-primary-light); color: var(--color-primary); display: flex; justify-content: center; align-items: center; font-size: 24px; }
+        
+        .support-btn { background: var(--color-info); color: var(--color-info-text); padding: var(--space-md); border-radius: var(--radius-lg); display: flex; justify-content: center; align-items: center; gap: 8px; margin: 0 var(--space-md) var(--space-md); cursor: pointer; font-weight: 700; }
+        .logout-btn { background: var(--color-danger-bg); color: var(--color-danger); padding: var(--space-md); border-radius: var(--radius-lg); display: flex; justify-content: center; align-items: center; gap: 8px; margin: 0 var(--space-md) var(--space-xl); cursor: pointer; font-weight: 700; border: 1px solid #ffcdd2; }
 
-        /* --- 6. Wizard Modal --- */
-        #wizard-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 2000; display: none; justify-content: center; align-items: flex-end; backdrop-filter: blur(4px); }
-        .wizard-container { background: var(--surface); width: 100%; border-radius: 24px 24px 0 0; padding: 32px 24px; max-height: 90vh; overflow-y: auto; position: relative; animation: slideUp 0.3s cubic-bezier(0.2, 0.8, 0.2, 1); }
-        .wizard-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
-        .wizard-progress { display: flex; gap: 6px; margin-bottom: 24px; }
+        /* --- Components: Modals & Overlays --- */
+        #wizard-overlay, #reg-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: var(--z-modal); display: none; justify-content: center; align-items: flex-end; backdrop-filter: blur(4px); }
+        .wizard-container, .reg-container { background: var(--color-surface); width: 100%; border-radius: 24px 24px 0 0; padding: 32px 24px; max-height: 90vh; overflow-y: auto; position: relative; animation: slideUp 0.3s cubic-bezier(0.2, 0.8, 0.2, 1); }
+        .wizard-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-lg); }
+        .wizard-progress { display: flex; gap: 6px; margin-bottom: var(--space-lg); }
         .progress-bar { height: 6px; flex: 1; background: #f0f0f0; border-radius: 3px; transition: 0.3s; }
-        .progress-bar.active { background: var(--secondary); }
-        .wizard-option-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-        .wizard-option { padding: 20px; border: 2px solid #f0f0f0; border-radius: 16px; text-align: center; font-weight: 700; color: var(--text-body); cursor: pointer; transition: 0.2s; background: #fff; font-size: 16px; }
-        .wizard-option:active { border-color: var(--primary); background: var(--primary-light); color: var(--primary); transform: scale(0.98); }
-        .result-context { background: var(--primary-light); padding: 20px; margin: 16px; border-radius: 16px; display: flex; flex-direction: column; gap: 12px; border: 1px solid rgba(0,101,43,0.1); }
-        .result-chips { display: flex; flex-wrap: wrap; gap: 8px; }
-        .result-chip { background: white; color: var(--text-body); padding: 6px 14px; border-radius: 20px; font-size: 13px; font-weight: 600; border: 1px solid rgba(0,0,0,0.05); }
+        .progress-bar.active { background: var(--color-secondary); }
+        .wizard-option-grid { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-sm); }
+        
+        /* Optimized Survey Card Option */
+        .survey-card { 
+            padding: 16px; 
+            border: 2px solid #f0f0f0; 
+            border-radius: var(--radius-lg); 
+            cursor: pointer; 
+            transition: 0.2s; 
+            background: #fff; 
+            text-align: left;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .survey-card:active { border-color: var(--color-primary); background: var(--color-primary-light); transform: scale(0.98); }
+        .survey-icon { font-size: 24px; color: var(--color-secondary); background: var(--color-secondary-light); padding: 8px; border-radius: 50%; }
+        .survey-text-group { flex: 1; }
+        .survey-title { font-weight: 700; font-size: 15px; color: var(--color-text-main); margin-bottom: 2px; }
+        .survey-sub { font-size: 11px; color: var(--color-text-muted); }
 
-        /* --- 7. Detail View (Enhanced) --- */
-        #detail-view { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--surface); z-index: 3000; overflow-y: auto; display: none; }
+        .wizard-option { padding: 20px; border: 2px solid #f0f0f0; border-radius: var(--radius-lg); text-align: center; font-weight: 700; color: var(--color-text-body); cursor: pointer; transition: 0.2s; background: #fff; font-size: var(--text-base); }
+        .wizard-option:active { border-color: var(--color-primary); background: var(--color-primary-light); color: var(--color-primary); transform: scale(0.98); }
+        .result-context { background: var(--color-primary-light); padding: 20px; margin: var(--space-md); border-radius: var(--radius-lg); display: flex; flex-direction: column; gap: var(--space-sm); border: 1px solid rgba(0,101,43,0.1); }
+        .result-chips { display: flex; flex-wrap: wrap; gap: 8px; }
+        .result-chip { background: white; color: var(--color-text-body); padding: 6px 14px; border-radius: 20px; font-size: 13px; font-weight: 600; border: 1px solid rgba(0,0,0,0.05); }
+
+        /* --- Social Login Buttons --- */
+        .btn-social { width: 100%; padding: 14px; border-radius: 12px; font-weight: 700; font-size: 15px; display: flex; align-items: center; justify-content: center; gap: 10px; border: none; cursor: pointer; margin-bottom: 12px; transition: 0.2s; box-shadow: var(--shadow-sm); }
+        .btn-social:active { transform: scale(0.98); opacity: 0.9; }
+        .btn-apple { background: var(--color-apple); color: white; }
+        .btn-line { background: var(--color-line); color: white; }
+        .btn-phone { background: white; color: var(--color-text-main); border: 1px solid #ddd; }
+
+        /* --- Components: Guest & Hook --- */
+        .guest-chips-container { padding: 4px var(--space-md) 8px; background: var(--color-primary); display: flex; gap: 8px; overflow-x: auto; scrollbar-width: none; color: white; margin-bottom: 0; }
+        .guest-chip { background: rgba(255,255,255,0.2); padding: 4px 12px; border-radius: 16px; font-size: var(--text-xs); white-space: nowrap; cursor: pointer; border:1px solid transparent; }
+        .guest-chip.active { background: white; color: var(--color-primary); font-weight: 700; }
+        
+        .hook-card { margin: var(--space-md); background: linear-gradient(135deg, #FF9800, #F57C00); border-radius: var(--radius-lg); padding: 20px; color: white; position: relative; overflow: hidden; box-shadow: var(--shadow-md); cursor: pointer; display: flex; align-items: center; justify-content: space-between; }
+        .hook-card::before { content:''; position:absolute; top:-50%; left:-10%; width:100%; height:200%; background:rgba(255,255,255,0.1); transform:rotate(30deg); }
+        .hook-content { position: relative; z-index: 2; flex:1; }
+        .hook-title { font-size: var(--text-lg); font-weight: 800; margin-bottom: 4px; }
+        .hook-sub { font-size: var(--text-xs); opacity: 0.9; }
+        
+        .reg-input { width: 100%; padding: 16px; border: 1px solid #ddd; border-radius: var(--radius-md); margin-bottom: 16px; font-size: var(--text-base); outline: none; transition: 0.2s; }
+        .reg-input:focus { border-color: var(--color-primary); }
+        .btn-reg-action { width: 100%; padding: 16px; background: var(--color-primary); color: white; border: none; border-radius: 30px; font-size: var(--text-base); font-weight: 700; cursor: pointer; }
+        .reg-benefits { background: var(--color-surface-muted); padding: 16px; border-radius: var(--radius-md); margin-bottom: 24px; }
+        .reg-benefit-item { display: flex; gap: 8px; font-size: 13px; margin-bottom: 8px; align-items: center; color: #555; }
+
+        /* --- Components: Detail View --- */
+        #detail-view { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--color-surface); z-index: 3000; overflow-y: auto; display: none; }
         .detail-hero { height: 320px; position: relative; }
         .detail-hero img { width: 100%; height: 100%; object-fit: cover; }
         .detail-back { position: fixed; top: 24px; left: 20px; width: 44px; height: 44px; background: rgba(255,255,255,0.95); border-radius: 50%; display: flex; justify-content: center; align-items: center; z-index: 3010; cursor: pointer; box-shadow: var(--shadow-md); }
         
-        .detail-body { padding: 32px 24px; background: white; border-radius: 32px 32px 0 0; margin-top: -40px; position: relative; min-height: 80vh; padding-bottom: 120px; }
+        .detail-body { padding: var(--space-xl) var(--space-lg); background: white; border-radius: 32px 32px 0 0; margin-top: -40px; position: relative; min-height: 80vh; padding-bottom: 120px; }
         
         .progress-bar-top { position: fixed; top: 0; left: 0; width: 100%; height: 6px; background: #eee; z-index: 3020; display:none; }
-        .progress-bar-fill { height: 100%; background: var(--primary); width: 0%; transition: width 0.1s; }
+        .progress-bar-fill { height: 100%; background: var(--color-primary); width: 0%; transition: width 0.1s; }
 
-        .info-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; margin-bottom: 24px; }
-        .info-box { background: #FAFAFA; border: 1px solid #EEE; border-radius: 16px; padding: 16px 12px; text-align: center; }
-        .info-label { font-size: 12px; color: #888; margin-bottom: 4px; }
+        .info-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: var(--space-md); margin-bottom: var(--space-lg); }
+        .info-box { background: #FAFAFA; border: 1px solid #EEE; border-radius: var(--radius-lg); padding: 16px 12px; text-align: center; }
+        .info-label { font-size: var(--text-xs); color: #888; margin-bottom: 4px; }
         .info-value { font-weight: 700; color: #333; }
 
-        .section-header-detail { font-size: 18px; font-weight: 700; color: var(--text-main); margin: 32px 0 16px; display: flex; align-items: center; gap: 8px; padding-left: 12px; border-left: 4px solid var(--secondary); }
+        .section-header-detail { font-size: var(--text-lg); font-weight: 700; color: var(--color-text-main); margin: var(--space-xl) 0 var(--space-md); display: flex; align-items: center; gap: 8px; padding-left: 12px; border-left: 4px solid var(--color-secondary); }
         
-        /* Updated Ingredients & Checkbox */
         .checkbox-item { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid #f9f9f9; cursor: pointer; }
         .checkbox-left { display: flex; align-items: center; gap: 12px; }
         .checkbox-circle { width: 22px; height: 22px; border: 2px solid #ddd; border-radius: 50%; transition: 0.2s; position: relative; flex-shrink: 0; }
-        .checkbox-circle.checked { background: var(--primary); border-color: var(--primary); }
+        .checkbox-circle.checked { background: var(--color-primary); border-color: var(--color-primary); }
         .checkbox-circle.checked::after { content:'✓'; color:white; position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); font-size:12px; }
-        .ing-amount { font-weight: 700; color: var(--text-body); transition: color 0.3s; }
-        .ing-amount.changed { color: var(--secondary); animation: pulse 0.5s; }
+        .ing-amount { font-weight: 700; color: var(--color-text-body); transition: color 0.3s; }
+        .ing-amount.changed { color: var(--color-secondary); animation: pulse 0.5s; }
         @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.1); } 100% { transform: scale(1); } }
 
-        /* New: Tags */
         .tag-row { display: flex; flex-wrap: wrap; gap: 8px; margin: 12px 0; }
-        .detail-tag { font-size: 12px; color: var(--primary); background: var(--primary-light); padding: 4px 12px; border-radius: 20px; font-weight: 600; }
+        .detail-tag { font-size: 12px; color: var(--color-primary); background: var(--color-primary-light); padding: 4px 12px; border-radius: 20px; font-weight: 600; }
 
-        /* New: Portion Scaler */
-        .portion-control { display: flex; align-items: center; justify-content: space-between; background: #F5F5F5; border-radius: 12px; padding: 8px 16px; margin-bottom: 24px; }
-        .portion-btn { width: 32px; height: 32px; background: white; border-radius: 50%; border: 1px solid #ddd; display: flex; justify-content: center; align-items: center; cursor: pointer; color: var(--primary); font-weight: bold; user-select: none; }
-        .portion-btn:active { background: var(--primary-light); }
+        .portion-control { display: flex; align-items: center; justify-content: space-between; background: var(--color-surface-muted); border-radius: var(--radius-md); padding: 8px 16px; margin-bottom: 24px; }
+        .portion-btn { width: 32px; height: 32px; background: white; border-radius: 50%; border: 1px solid #ddd; display: flex; justify-content: center; align-items: center; cursor: pointer; color: var(--color-primary); font-weight: bold; user-select: none; }
+        .portion-btn:active { background: var(--color-primary-light); }
         .portion-display { font-weight: 700; font-size: 16px; display: flex; flex-direction: column; align-items: center; line-height: 1.2; }
         .portion-label { font-size: 10px; color: #888; }
         
-        /* Multi-Use Card Style Update */
-        .rp-card { min-width: 130px; border: 1px solid #eee; border-radius: 12px; padding: 12px; text-align: center; cursor: pointer; transition: 0.2s; background: white; }
-        .rp-card:active { border-color: var(--primary); transform: scale(0.98); background: #FAFAFA; }
+        .rp-card { min-width: 130px; border: 1px solid #eee; border-radius: var(--radius-md); padding: 12px; text-align: center; cursor: pointer; transition: 0.2s; background: white; }
+        .rp-card:active { border-color: var(--color-primary); transform: scale(0.98); background: #FAFAFA; }
         .rp-img { width: 100%; height: 80px; object-fit: cover; border-radius: 8px; margin-bottom: 8px; }
 
-        /* New: Fixed Footer CTA */
         .detail-footer { position: fixed; bottom: 0; left: 0; width: 100%; background: white; box-shadow: var(--shadow-up); padding: 16px 24px; display: flex; gap: 12px; z-index: 3020; padding-bottom: max(16px, env(safe-area-inset-bottom)); }
-        .btn-outline { flex: 1; border: 1px solid var(--primary); color: var(--primary); background: white; border-radius: 30px; height: 48px; font-weight: 700; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 8px; }
-        .btn-primary { flex: 1; background: var(--primary); color: white; border: none; border-radius: 30px; height: 48px; font-weight: 700; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 8px; box-shadow: 0 4px 12px rgba(0,101,43,0.3); }
+        .btn-outline { flex: 1; border: 1px solid var(--color-primary); color: var(--color-primary); background: white; border-radius: 30px; height: 48px; font-weight: 700; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 8px; }
+        .btn-primary { flex: 1; background: var(--color-primary); color: white; border: none; border-radius: 30px; height: 48px; font-weight: 700; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 8px; box-shadow: 0 4px 12px rgba(0,101,43,0.3); }
 
-        /* Comments New Style */
+        /* Notes Section */
+        .note-area { width: 100%; min-height: 100px; padding: 12px; border: 1px solid #ddd; border-radius: var(--radius-md); font-family: inherit; margin-top: 8px; font-size: 14px; background: #fffcf5; color: #444; }
+        .note-area:focus { border-color: var(--color-secondary); outline: none; box-shadow: 0 0 0 2px rgba(255,87,0,0.1); }
+        .btn-save-note { margin-top: 8px; background: var(--color-secondary); color: white; border: none; padding: 6px 16px; border-radius: 20px; font-size: 12px; font-weight: 700; float: right; cursor: pointer; }
+
+        /* Comments */
         .comment-section { margin-top: 40px; border-top: 1px solid #eee; padding-top: 24px; }
         .comment-item { display: flex; gap: 16px; margin-bottom: 24px; border-bottom: 1px solid #f5f5f5; padding-bottom: 16px; }
         .comment-avatar { width: 40px; height: 40px; background: #81C784; color:white; border-radius: 50%; display:flex; justify-content:center; align-items:center; font-weight:700; flex-shrink:0; }
@@ -186,23 +319,21 @@
         .action-chip { font-size: 12px; color: #555; border: 1px solid #ddd; padding: 4px 12px; border-radius: 16px; display: flex; align-items: center; gap: 4px; cursor: pointer; transition: 0.2s; }
         .action-chip:active { background: #f0f0f0; }
 
-        .comment-input-area { background: #F5F5F5; padding: 4px 4px 4px 16px; border-radius: 24px; display: flex; align-items: center; margin-top: 16px; border: 1px solid transparent; transition: 0.2s; }
-        .comment-input-area:focus-within { border-color: var(--primary); background: white; box-shadow: 0 0 0 4px rgba(0,101,43,0.1); }
-        .btn-submit { background: var(--primary); color: white; border: none; width: 36px; height: 36px; border-radius: 50%; display: flex; justify-content: center; align-items: center; cursor: pointer; margin-left: 8px; flex-shrink: 0; }
-        .btn-submit.editing { background: var(--secondary); }
+        .comment-input-area { background: var(--color-surface-muted); padding: 4px 4px 4px 16px; border-radius: 24px; display: flex; align-items: center; margin-top: 16px; border: 1px solid transparent; transition: 0.2s; }
+        .comment-input-area:focus-within { border-color: var(--color-primary); background: white; box-shadow: 0 0 0 4px rgba(0,101,43,0.1); }
+        .btn-submit { background: var(--color-primary); color: white; border: none; width: 36px; height: 36px; border-radius: 50%; display: flex; justify-content: center; align-items: center; cursor: pointer; margin-left: 8px; flex-shrink: 0; }
+        .btn-submit.editing { background: var(--color-secondary); }
 
-        /* Product Recommendation */
         .product-rec-container { padding: 16px 0 32px; }
-        .product-card-sm { background: #F9F9F9; border-radius: 12px; padding: 12px; display: flex; align-items: center; gap: 12px; border: 1px solid #EEE; margin-bottom: 12px; cursor: pointer; }
+        .product-card-sm { background: var(--color-surface-muted); border-radius: var(--radius-md); padding: 12px; display: flex; align-items: center; gap: 12px; border: 1px solid #EEE; margin-bottom: 12px; cursor: pointer; }
         .product-card-sm img { width: 48px; height: 48px; object-fit: contain; }
 
-        /* Nav (Updated to remove floating circle) */
+        /* Nav */
         .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; height: var(--bottom-nav-height); background: rgba(255,255,255,0.98); backdrop-filter: blur(20px); border-top: 1px solid #eee; display: flex; justify-content: space-around; padding-top: 12px; z-index: 1000; }
-        .nav-item { display: flex; flex-direction: column; align-items: center; gap: 6px; color: var(--text-muted); cursor: pointer; flex: 1; transition: 0.2s; }
-        .nav-item.active { color: var(--primary); }
+        .nav-item { display: flex; flex-direction: column; align-items: center; gap: 6px; color: var(--color-text-muted); cursor: pointer; flex: 1; transition: 0.2s; }
+        .nav-item.active { color: var(--color-primary); }
         .nav-icon-container { width: 24px; height: 24px; display: flex; justify-content: center; align-items: center; }
-        /* Points Circle Style */
-        .scan-circle-icon { width: 32px; height: 32px; background: var(--primary); color: white; border-radius: 50%; display: flex; justify-content: center; align-items: center; box-shadow: 0 2px 8px rgba(0,101,43,0.3); }
+        .scan-circle-icon { width: 32px; height: 32px; background: var(--color-primary); color: white; border-radius: 50%; display: flex; justify-content: center; align-items: center; box-shadow: 0 2px 8px rgba(0,101,43,0.3); }
 
     </style>
 </head>
@@ -219,10 +350,21 @@
             <div class="wizard-progress" id="wizard-progress" style="display:flex;gap:6px;margin-bottom:24px;"></div>
             <div id="wizard-content"></div>
             <div id="wizard-loading" style="display:none; text-align:center; padding:60px 0;">
-                <span class="material-symbols-outlined" style="font-size:56px; color:var(--secondary); animation:spin 1s linear infinite;">progress_activity</span>
-                <p style="font-weight:700; color:var(--primary); margin-top:24px; font-size:18px;">正在推薦最佳方案</p>
+                <span class="material-symbols-outlined" style="font-size:56px; color:var(--color-secondary); animation:spin 1s linear infinite;">progress_activity</span>
+                <p style="font-weight:700; color:var(--color-primary); margin-top:24px; font-size:18px;">正在推薦最佳方案</p>
                 <style>@keyframes spin { 100% { transform: rotate(360deg); } }</style>
             </div>
+        </div>
+    </div>
+
+    <div id="reg-overlay">
+        <div class="reg-container">
+            <div class="wizard-header">
+                <span style="font-size:20px;font-weight:700;">💼 歡迎加入康寶廚藝時代</span>
+                <span class="material-symbols-outlined" onclick="closeReg()" style="cursor:pointer;padding:8px;">close</span>
+            </div>
+            
+            <div id="reg-step-container"></div>
         </div>
     </div>
 
@@ -239,18 +381,23 @@
         <div class="nav-item" onclick="router('info')"><span class="material-symbols-outlined">article</span><span style="font-size:10px;">餐飲情報</span></div>
         <div class="nav-item" onclick="router('scan')">
             <div class="scan-circle-icon"><span class="material-symbols-outlined" style="font-size:20px;">qr_code_scanner</span></div>
-            <span style="font-size:10px;font-weight:700;color:var(--primary);margin-top:2px;">集點</span>
+            <span style="font-size:10px;font-weight:700;color:var(--color-primary);margin-top:2px;">集點</span>
         </div>
         <div class="nav-item" onclick="router('recipes')"><span class="material-symbols-outlined">menu_book</span><span style="font-size:10px;">專業食譜</span></div>
         <div class="nav-item" onclick="router('shop')"><span class="material-symbols-outlined">shopping_cart</span><span style="font-size:10px;">購買</span></div>
     </nav>
 
     <script>
+        // --- Global State ---
+        let userState = 'guest'; // 'guest' or 'member'
+        let userPrefs = { goal: '', type: '', role: '' };
+        const guestInterests = ['🔥 川菜', '🍱 商業午餐', '🥩 舒肥應用', '🍜 麵食'];
+
         // --- Data ---
         const db = {
             recipes: [
-                { id: 1, title: "麻辣水煮魚", category: ["all","chef","spicy"], tags: ["#川菜經典", "#冬季限定", "#高利潤"], type: "名廚", date: "1月12日", img: "https://www.unileverfoodsolutions.tw/dam/global-ufs/mcos/na/taiwan/calcmenu/recipes/TW-recipes/general/%E9%BA%BB%E8%BE%A3%E6%B0%B4%E7%85%AE%E9%AD%9A/CR2024Traditional003%20(2).jpg", 
-                  stats: {time: "15分", cost: "$45", diff: "中"}, ranking: 1, reviews: 24, baseServings: 10,
+                { id: 1, title: "麻辣水煮魚", category: ["all","chef","spicy"], tags: ["#川菜經典", "#冬季限定", "#高利潤"], type: "名廚", date: "2024/01/12", views: "3.2k", img: "https://www.unileverfoodsolutions.tw/dam/global-ufs/mcos/na/taiwan/calcmenu/recipes/TW-recipes/general/%E9%BA%BB%E8%BE%A3%E6%B0%B4%E7%85%AE%E9%AD%9A/CR2024Traditional003%20(2).jpg", 
+                  stats: {time: "15分", cost: "$45", diff: "中"}, ranking: 1, reviews: 24, baseServings: 10, isSaved: true, note: "這道菜過年可以推，魚片要厚一點。",
                   desc: "江振誠主廚推薦技法，透過低溫慢煮鎖住肉汁，搭配康寶麻辣醬與特製花椒油，呈現多層次香氣。",
                   ingredients: [ {name: "鱸魚片", amount: 400, unit: "g"}, {name: "豆芽菜", amount: 200, unit: "g"}, {name: "康寶麻辣醬", amount: 3, unit: "大匙"}, {name: "康寶雞粉", amount: 1, unit: "小匙"}, {name: "花椒粒", amount: 1, unit: "大匙"} ],
                   steps: [{t:"醃製",c:"鱸魚片切薄片，用鹽、太白粉醃製10分鐘。"}, {t:"炒醬煮湯",c:"起油鍋爆香麻辣醬，加入高湯煮滾。"}, {t:"淋油爆香",c:"魚片煮熟盛盤。另起油鍋爆香花椒、乾辣椒，淋在魚片上。"}],
@@ -258,8 +405,8 @@
                   multiUse: [{id: 101, name:"麻辣鍋",cost:"$30", img: "https://placehold.co/150x100/e74c3c/fff?text=Pot"},{id: 102, name:"口水雞",cost:"$50", img: "https://placehold.co/150x100/d35400/fff?text=Chicken"}],
                   comments: [{id:1, user:"王大廚", star:5, date:"2天前", text:"客人反應很好，出餐很快！"}, {id:2, user:"李店長", star:4, date:"1週前", text:"成本控制得宜。"}]
                 },
-                { id: 2, title: "泰式打拋豬", category: ["all","lazy","low_cost"], tags: ["#異國料理", "#下飯神器"], type: "懶人包", date: "1月10日", img: "./img/thai_pork.png",
-                  stats: {time: "10分", cost: "$38", diff: "易"}, ranking: 2, reviews: 56, baseServings: 5,
+                { id: 2, title: "泰式打拋豬", category: ["all","lazy","low_cost"], tags: ["#異國料理", "#下飯神器"], type: "懶人包", date: "2024/01/10", views: "5.8k", img: "./img/thai_pork.png",
+                  stats: {time: "10分", cost: "$38", diff: "易"}, ranking: 2, reviews: 56, baseServings: 5, isSaved: false, note: "",
                   desc: "一醬搞定複雜調味，適合商業午餐。",
                   ingredients: [ {name: "豬絞肉", amount: 150, unit: "g"}, {name: "九層塔", amount: 1, unit: "把"}, {name: "康寶泰式打拋醬", amount: 2, unit: "大匙"}, {name: "魚露", amount: 1, unit: "小匙"}],
                   steps: [{t:"炒絞肉",c:"熱鍋爆香蒜末，加入豬絞肉炒至變色。"}, {t:"加醬拌炒",c:"加入打拋醬拌勻，起鍋前放九層塔。"}],
@@ -267,32 +414,15 @@
                   multiUse: [{id: 103, name:"炒河粉",cost:"$32", img:"https://placehold.co/150x100/2ecc71/fff?text=Noodle"}, {id: 104, name:"涼拌海鮮",cost:"$45", img:"https://placehold.co/150x100/3498db/fff?text=Seafood"}], 
                   comments: [{id:3, user:"陳師傅", star:5, date:"3天前", text:"真的只要一罐醬。"}]
                 },
-                // --- Dummy Recipes Populated with Detail ---
-                { id: 3, title: "口水雞", category: ["chef"], type: "名廚", date: "1月09日", img: "https://www.unileverfoodsolutions.tw/dam/global-ufs/mcos/na/taiwan/calcmenu/recipes/TW-recipes/general/%E5%8F%A3%E6%B0%B4%E9%9B%9E/main-header.jpg", stats: {time: "20分", cost: "$60", diff: "中"}, ranking: 3, desc: "鮮香麻辣。", 
+                { id: 3, title: "口水雞", category: ["chef"], type: "名廚", date: "2024/01/09", views: "2.1k", img: "https://www.unileverfoodsolutions.tw/dam/global-ufs/mcos/na/taiwan/calcmenu/recipes/TW-recipes/general/%E5%8F%A3%E6%B0%B4%E9%9B%9E/main-header.jpg", stats: {time: "20分", cost: "$60", diff: "中"}, ranking: 3, desc: "鮮香麻辣。", 
                   ingredients: [{name:"雞腿肉",amount:2,unit:"支"},{name:"花生",amount:50,unit:"g"},{name:"花椒油",amount:2,unit:"大匙"}], 
                   steps: [{t:"煮雞",c:"雞肉煮熟後冰鎮切塊。"},{t:"調醬",c:"混合調味料淋在雞肉上。"}], tips: "冰鎮是皮脆肉嫩的關鍵。", multiUse: [], comments: [] },
-                { id: 4, title: "舒肥波特酒風味鴨胸乳酪燉飯", category: ["chef"], type: "名廚", date: "1月08日", img: "https://www.unileverfoodsolutions.tw/dam/global-ufs/mcos/na/taiwan/calcmenu/recipes/TW-recipes/general/%E8%88%92%E8%82%A5%E6%B3%A2%E7%89%B9%E9%85%92%E9%A2%A8%E5%91%B3%E9%B4%A8%E8%83%B8%E4%B9%B3%E9%85%AA%E7%87%89%E9%A3%AF/main-header.jpg", stats: {time: "25分", cost: "$80", diff: "難"}, ranking: 4, desc: "濃郁松露香。", 
+                { id: 4, title: "舒肥波特酒風味鴨胸", category: ["chef"], type: "名廚", date: "2024/01/08", views: "1.5k", img: "https://www.unileverfoodsolutions.tw/dam/global-ufs/mcos/na/taiwan/calcmenu/recipes/TW-recipes/general/%E8%88%92%E8%82%A5%E6%B3%A2%E7%89%B9%E9%85%92%E9%A2%A8%E5%91%B3%E9%B4%A8%E8%83%B8%E4%B9%B3%E9%85%AA%E7%87%89%E9%A3%AF/main-header.jpg", stats: {time: "25分", cost: "$80", diff: "難"}, ranking: 4, desc: "濃郁松露香。", 
                   ingredients: [{name:"義大利米",amount:200,unit:"g"},{name:"綜合野菇",amount:100,unit:"g"},{name:"松露醬",amount:1,unit:"大匙"}], 
                   steps: [{t:"炒菇",c:"野菇炒香備用。"},{t:"燉飯",c:"米炒香後分次加入高湯燉煮。"}], tips: "高湯要分次加才能煮出濃稠感。", multiUse: [], comments: [] },
-                { id: 5, title: "法式洋蔥湯", category: ["chef"], type: "名廚", date: "1月07日", img: "https://www.unileverfoodsolutions.tw/dam/global-ufs/mcos/na/taiwan/calcmenu/recipes/TW-recipes/general/%E6%B4%8B%E8%94%A5%E6%B9%AF/CR2024Beef002.jpg", stats: {time: "40分", cost: "$30", diff: "中"}, ranking: 5, desc: "經典湯品。", 
+                { id: 5, title: "法式洋蔥湯", category: ["chef"], type: "名廚", date: "2024/01/07", views: "1.8k", img: "https://www.unileverfoodsolutions.tw/dam/global-ufs/mcos/na/taiwan/calcmenu/recipes/TW-recipes/general/%E6%B4%8B%E8%94%A5%E6%B9%AF/CR2024Beef002.jpg", stats: {time: "40分", cost: "$30", diff: "中"}, ranking: 5, desc: "經典湯品。", 
                   ingredients: [{name:"洋蔥",amount:3,unit:"顆"},{name:"牛高湯",amount:500,unit:"ml"},{name:"起司",amount:50,unit:"g"}], 
                   steps: [{t:"炒洋蔥",c:"小火慢炒洋蔥至焦糖色。"},{t:"煮湯",c:"加入高湯煮滾後焗烤。"}], tips: "洋蔥炒得越久越甜。", multiUse: [], comments: [] },
-                { id: 6, title: "避風塘炒蟹", category: ["chef"], type: "名廚", date: "1月06日", img: "https://placehold.co/800x600/e67e22/fff?text=Crab", stats: {time: "30分", cost: "$120", diff: "難"}, ranking: 6, desc: "香酥可口。", 
-                  ingredients: [{name:"螃蟹",amount:2,unit:"隻"},{name:"蒜酥",amount:100,unit:"g"},{name:"乾辣椒",amount:10,unit:"g"}], 
-                  steps: [{t:"炸蟹",c:"螃蟹切塊炸酥。"},{t:"拌炒",c:"爆香料後加入螃蟹拌炒。"}], tips: "蒜酥要控制火候避免反苦。", multiUse: [], comments: [] },
-                { id: 7, title: "清蒸石斑", category: ["chef"], type: "名廚", date: "1月05日", img: "https://placehold.co/800x600/3498db/fff?text=Fish", stats: {time: "15分", cost: "$150", diff: "易"}, ranking: 7, desc: "鮮甜原味。", 
-                  ingredients: [{name:"石斑魚",amount:1,unit:"尾"},{name:"蔥薑絲",amount:30,unit:"g"},{name:"蒸魚醬油",amount:2,unit:"大匙"}], 
-                  steps: [{t:"蒸魚",c:"大火蒸8分鐘。"},{t:"淋油",c:"鋪上蔥絲淋上熱油。"}], tips: "水滾後再放魚。", multiUse: [], comments: [] },
-                { id: 8, title: "紅酒燉牛肉", category: ["chef"], type: "名廚", date: "1月04日", img: "https://placehold.co/800x600/8e44ad/fff?text=Beef", stats: {time: "90分", cost: "$100", diff: "難"}, ranking: 8, desc: "入口即化。", 
-                  ingredients: [{name:"牛肋條",amount:600,unit:"g"},{name:"紅酒",amount:300,unit:"ml"},{name:"紅蘿蔔",amount:1,unit:"根"}], 
-                  steps: [{t:"煎肉",c:"牛肉煎至表面金黃。"},{t:"燉煮",c:"加入蔬菜與紅酒燉煮1.5小時。"}], tips: "隔夜加熱更好吃。", multiUse: [], comments: [] },
-                { id: 9, title: "XO醬炒雙脆", category: ["chef"], type: "名廚", date: "1月03日", img: "https://placehold.co/800x600/27ae60/fff?text=XO", stats: {time: "10分", cost: "$70", diff: "中"}, ranking: 9, desc: "鑊氣十足。", 
-                  ingredients: [{name:"蝦仁",amount:100,unit:"g"},{name:"花枝",amount:100,unit:"g"},{name:"XO醬",amount:2,unit:"大匙"}], 
-                  steps: [{t:"過油",c:"海鮮快速過油。"},{t:"快炒",c:"大火快炒加入XO醬。"}], tips: "火候要大，動作要快。", multiUse: [], comments: [] },
-                { id: 10, title: "金沙中卷", category: ["chef"], type: "名廚", date: "1月02日", img: "https://placehold.co/800x600/f1c40f/333?text=Squid", stats: {time: "15分", cost: "$65", diff: "中"}, ranking: 10, desc: "鹹蛋黃香氣。", 
-                  ingredients: [{name:"中卷",amount:2,unit:"隻"},{name:"鹹蛋黃",amount:3,unit:"顆"},{name:"蔥花",amount:10,unit:"g"}], 
-                  steps: [{t:"炸中卷",c:"中卷裹粉炸酥。"},{t:"炒金沙",c:"鹹蛋黃炒至起泡後裹上中卷。"}], tips: "鹹蛋黃要炒到起泡才香。", multiUse: [], comments: [] },
-                // Dummy IDs for Multi-Use Linking
                 { id: 101, title: "麻辣鍋底", category: ["all"], type: "延伸", date: "", img: "https://placehold.co/800x600/e74c3c/fff?text=Pot", stats: {time: "5分", cost: "$30", diff: "易"}, desc: "一醬成湯。", 
                   ingredients: [{name:"高湯",amount:1000,unit:"ml"},{name:"麻辣醬",amount:3,unit:"大匙"}], steps: [{t:"煮湯",c:"混合煮滾即可。"}], tips: "", multiUse: [], comments: [] },
                 { id: 102, title: "口水雞", category: ["all"], type: "延伸", date: "", img: "https://placehold.co/800x600/d35400/fff?text=Chicken", stats: {time: "15分", cost: "$50", diff: "中"}, desc: "冷盤首選。", 
@@ -303,24 +433,60 @@
                   ingredients: [{name:"海鮮",amount:100,unit:"g"},{name:"打拋醬",amount:1,unit:"匙"}], steps: [{t:"拌勻",c:"所有材料拌勻。"}], tips: "", multiUse: [], comments: [] },
             ],
             info: [
-                { id: 101, title: "韓式發酵醬應用趨勢", category: "trend", date: "1月11日", isNew: true, img: "https://placehold.co/800x600/eee/333?text=Korean+Sauce",
-                  views: "1.2k", ranking: 1, tldr: ["可取代傳統醃料","成本降低30%"], 
-                  content: `<p>近年韓式料理風潮席捲全球，發酵醬料的獨特風味成為餐飲業的新寵。根據 2024 餐飲趨勢報告，使用發酵調味品的餐廳比傳統餐廳多出 35% 的回客率。</p>
-                            <img src="https://placehold.co/800x400/eee/333?text=Trend+Chart" style="width:100%;border-radius:8px;margin:16px 0;">
-                            <h3>為什麼選擇發酵醬？</h3>
-                            <p>韓式發酵醬的獨特之處在於其深層的鮮味（Umami），能為料理帶來豐富的層次感。不僅可以用於傳統韓式料理，如部隊鍋、石鍋拌飯，更能與西式料理結合，例如韓式辣醬義大利麵、泡菜起司漢堡等。</p>
-                            <p>對於餐廳經營者而言，使用現成的發酵醬料可以大幅縮短備料時間。傳統醃製過程往往需要數天甚至數週，而使用專業的發酵醬料，只需醃製數小時即可達到相同的風味深度。</p>
-                            <h3>成本效益分析</h3>
-                            <p>我們實測發現，使用康寶韓式辣醬取代傳統手工調製的醃料，可以節省約 30% 的食材成本，更重要的是節省了 50% 的人力工時。這在缺工嚴重的當下，是極具吸引力的解決方案。</p>
-                            <p>此外，發酵食品的健康形象也符合現代消費者對飲食的追求。富含益生菌的形象，讓菜單設計上更有行銷賣點。</p>
-                            <br><br><p>總結來說，引入韓式發酵醬不僅是口味上的創新，更是經營效率的提升。</p>` },
-                { id: 102, title: "雞粉取代高湯成本術", category: "manage", date: "1月08日", isNew: true, img: "https://placehold.co/800x600/333/fff?text=Chicken+Powder",
-                  views: "3.5k", ranking: 2, tldr: ["傳統熬湯費時","雞粉即沖即用"], content: "實測顯示..." }
+                { id: 101, title: "韓式發酵醬應用趨勢", category: "trend", date: "2024/01/11", isNew: true, img: "https://placehold.co/800x600/eee/333?text=Korean+Sauce",
+                  views: "1.2k", ranking: 1, tldr: ["可取代傳統醃料","成本降低30%"], isSaved: false,
+                  content: `<p>近年韓式料理風潮席捲全球...</p>` },
+                { id: 102, title: "雞粉取代高湯成本術", category: "manage", date: "2024/01/08", isNew: true, img: "https://placehold.co/800x600/333/fff?text=Chicken+Powder",
+                  views: "3.5k", ranking: 2, tldr: ["傳統熬湯費時","雞粉即沖即用"], isSaved: false, content: "實測顯示..." }
             ],
             products: [ 
                 {name: "康寶鮮雞汁", img: "https://placehold.co/100/FFD700/333?text=Chicken"}, 
                 {name: "康寶麻辣醬", img: "https://placehold.co/100/FF5700/FFF?text=Spicy"}, 
                 {name: "康寶打拋醬", img: "https://placehold.co/100/00652B/FFF?text=Thai"} 
+            ],
+            topProducts: [
+                { id: 1, name: "康寶醇濃雞粉", sales: "月銷 5,000+", img: "https://www.unileverfoodsolutions.tw/dam/global-ufs/mcos/na/taiwan/calcmenu/products/TW-products/packshots/knorr/%E5%BA%B7%E5%AF%B6%E9%9B%9E%E7%B2%89/%E9%9B%9E%E7%B2%89(1%E5%85%AC%E6%96%A4).png" },
+                { id: 2, name: "康寶濃縮鮮雞汁", sales: "月銷 3,500+", img: "https://www.unileverfoodsolutions.tw/dam/global-ufs/mcos/na/taiwan/calcmenu/products/TW-products/packshots/knorr/%E5%BA%B7%E5%AF%B6%E6%BF%83%E7%B8%AE%E9%AE%AE%E9%9B%9E%E6%B1%81/%E6%BF%83%E7%B8%AE%E9%AE%AE%E9%9B%9E%E6%B1%81(1%E5%85%AC%E6%96%A4).png" },
+                { id: 3, name: "康寶瑤柱高湯", sales: "月銷 2,800+", img: "https://www.unileverfoodsolutions.tw/dam/global-ufs/mcos/na/taiwan/calcmenu/products/TW-products/packshots/knorr/%E5%BA%B7%E5%AF%B6%E7%91%A4%E6%9F%B1%E9%AB%98%E6%B9%AF/%E7%91%A4%E6%9F%B1%E9%AB%98%E6%B9%AF(480%E5%85%AC%E5%85%8B).png" },
+                { id: 4, name: "康寶濃白高湯凍(雞豬風味)", sales: "月銷 1,500+", img: "https://www.unileverfoodsolutions.tw/dam/global-ufs/mcos/na/taiwan/calcmenu/products/TW-products/packshots/knorr/%E5%BA%B7%E5%AF%B6%E6%BF%83%E7%99%BD%E9%AB%98%E6%B9%AF%E5%87%8D/%E6%BF%83%E7%99%BD%E9%AB%98%E6%B9%AF%E5%87%8D(800%E5%85%AC%E5%85%8B).png" }
+            ],
+            shopProducts: [
+                {
+                    id: 201, name: "康寶醇濃雞粉", pack: "1kg x 12罐/箱", price: "$3,600",
+                    img: "https://www.unileverfoodsolutions.tw/dam/global-ufs/mcos/na/taiwan/calcmenu/products/TW-products/packshots/knorr/%E5%BA%B7%E5%AF%B6%E9%9B%9E%E7%B2%89/%E9%9B%9E%E7%B2%89(1%E5%85%AC%E6%96%A4).png",
+                    desc: "96% 廚師認證，口感接近老母雞湯，適合快炒、醃製、湯底。",
+                    features: ["含雞肉成分", "提升鮮味", "耐煮"]
+                },
+                {
+                    id: 202, name: "康寶濃縮鮮雞汁", pack: "1L x 6罐/箱", price: "$2,100",
+                    img: "https://www.unileverfoodsolutions.tw/dam/global-ufs/mcos/na/taiwan/calcmenu/products/TW-products/packshots/knorr/%E5%BA%B7%E5%AF%B6%E6%BF%83%E7%B8%AE%E9%AE%AE%E9%9B%9E%E6%B1%81/%E6%BF%83%E7%B8%AE%E9%AE%AE%E9%9B%9E%E6%B1%81(1%E5%85%AC%E6%96%A4).png",
+                    desc: "液態雞精華，即溶免煮，適合涼拌、點心餡料。",
+                    features: ["液態易溶", "鎖住肉汁", "提鮮"]
+                },
+                {
+                    id: 203, name: "康寶瑤柱高湯", pack: "480g x 6罐/箱", price: "$2,400",
+                    img: "https://www.unileverfoodsolutions.tw/dam/global-ufs/mcos/na/taiwan/calcmenu/products/TW-products/packshots/knorr/%E5%BA%B7%E5%AF%B6%E7%91%A4%E6%9F%B1%E9%AB%98%E6%B9%AF/%E7%91%A4%E6%9F%B1%E9%AB%98%E6%B9%AF(480%E5%85%AC%E5%85%8B).png",
+                    desc: "精選瑤柱熬製而成的濃縮液態高湯",
+                    features: ["幫助提升海鮮或蔬菜類的鮮甜度", "一醬多用", "穩定出餐"]
+                },
+                {
+                    id: 204, name: "康寶濃白高湯凍(雞豬風味)", pack: "800g x 6罐/箱", price: "$1,800",
+                    img: "https://www.unileverfoodsolutions.tw/dam/global-ufs/mcos/na/taiwan/calcmenu/products/TW-products/packshots/knorr/%E5%BA%B7%E5%AF%B6%E6%BF%83%E7%99%BD%E9%AB%98%E6%B9%AF%E5%87%8D/%E6%BF%83%E7%99%BD%E9%AB%98%E6%B9%AF%E5%87%8D(800%E5%85%AC%E5%85%8B).png",
+                    desc: "經典西式白醬基底，奶香濃郁，抗熱性佳。",
+                    features: ["奶香濃郁", "抗熱性佳", "不易油水分離"]
+                },
+                {
+                    id: 205, name: "康寶海鮮粉", pack: "1kg x 12罐/箱", price: "$3,800",
+                    img: "https://www.unileverfoodsolutions.tw/dam/global-ufs/mcos/na/taiwan/calcmenu/products/TW-products/general/knorr-seafood-powder/Knorr_Seafood_Powder_1kg_Front_High_Res.png",
+                    desc: "嚴選海鮮精華，湯頭鮮甜，適合海鮮料理。",
+                    features: ["鮮甜湯頭", "去腥提鮮", "百搭海鮮"]
+                },
+                {
+                    id: 206, name: "康寶濃縮番茄霜", pack: "3kg x 6罐/箱", price: "$4,200",
+                    img: "https://www.unileverfoodsolutions.tw/dam/global-ufs/mcos/na/taiwan/calcmenu/products/TW-products/general/knorr-tomato-pronto/Knorr_Tomato_Pronto_3kg_Front_High_Res.png",
+                    desc: "義大利進口番茄，酸甜適中，適合義大利麵、燉飯。",
+                    features: ["義大利進口", "酸甜適中", "色澤鮮紅"]
+                }
             ],
             sop: { id:999, title:"3步驟出餐 SOP", desc:"針對繁忙廚房設計。", steps:[{title:"免調味",text:"使用專業醬料"},{title:"預製",text:"統一規格"},{title:"快炒",text:"大火出餐"}] },
             chef: { name:"江振誠", desc:"米其林二星主廚，擅長運用在地食材，將傳統川菜與現代技法結合。", img:"https://placehold.co/800x400/333/FFF?text=Chef+Andre" }
@@ -328,41 +494,189 @@
 
         // --- Core Router ---
         function router(page) {
+            if (userState === 'guest' && ['scan', 'profile'].includes(page)) {
+                openReg();
+                return;
+            }
             document.querySelectorAll('.nav-item').forEach((el,i)=>el.classList.toggle('active', i===['home','info','scan','recipes','shop'].indexOf(page)));
             const root = document.getElementById('app-root');
             window.scrollTo(0,0);
+            
             if(page==='home') root.innerHTML = renderHeader(page)+renderHome();
             else if(page==='info') root.innerHTML = renderHeader(page)+renderInfo();
             else if(page==='recipes') root.innerHTML = renderHeader(page)+renderRecipes();
             else if(page==='scan') renderScanPage();
             else if(page==='shop') root.innerHTML = renderHeader(page)+renderShop();
-            else if(page==='profile') root.innerHTML = renderHeader(page)+renderProfile(); // New Route
+            else if(page==='profile') root.innerHTML = renderHeader(page)+renderProfile();
         }
 
         function renderHeader(page) {
-            // Updated Top Nav with Profile Icon
             let tabs = page==='home'? '' :
                        page==='info'?renderTabs(['最新情報','經營管理','餐飲趨勢'],'info'):'';
-            const profileIcon = `<span class="material-symbols-outlined icon-btn" onclick="router('profile')">person</span>`;
+            const profileAction = userState === 'guest' ? "openReg()" : "router('profile')";
+            const profileIcon = `<span class="material-symbols-outlined icon-btn" onclick="${profileAction}">person</span>`;
             
-            // Hide search/profile on Profile page for cleaner look, or keep them. keeping consistent.
-            return `<header><div class="header-top"><div class="search-bar"><span class="material-symbols-outlined">search</span>搜尋...</div><span class="material-symbols-outlined icon-btn">notifications</span>${profileIcon}</div>${tabs}</header>`;
+            let guestChipsHTML = '';
+            if (page === 'home' && userState === 'guest') {
+                guestChipsHTML = `<div class="guest-chips-container">${guestInterests.map(i=>`<div class="guest-chip">${i}</div>`).join('')}</div>`;
+            }
+            return `<header><div class="header-top"><div class="search-bar"><span class="material-symbols-outlined">search</span>搜尋...</div><span class="material-symbols-outlined icon-btn">notifications</span>${profileIcon}</div>${guestChipsHTML}${tabs}</header>`;
         }
         function renderTabs(l,c) { return `<div class="tab-bar"><div class="scrolling-wrapper">${l.map((t,i)=>`<div class="tab-chip ${i===0?'active':''}" onclick="filterList(this,'${t}','${c}')">${t}</div>`).join('')}</div></div>`; }
 
         // --- Pages ---
         function renderHome() {
+            let welcomeSection = '';
+            
+            if (userState === 'member') {
+                let intentMsg = "為你推薦";
+                if(userPrefs.goal === 'innovation') intentMsg = "✨ 激發你的廚藝靈感";
+                else if(userPrefs.goal === 'efficiency') intentMsg = "⚡ 3步驟快速出餐方案";
+                else if(userPrefs.goal === 'cost') intentMsg = "💰 高利潤低成本首選";
+
+                welcomeSection = `<div style="padding:var(--space-lg) var(--space-md) 0;"><div style="font-size:var(--text-xs);color:var(--color-primary);font-weight:700;">👋 早安，張主廚</div><div style="font-size:var(--text-2xl);font-weight:800;color:var(--color-text-main);">${intentMsg}</div></div>`;
+            } else {
+                welcomeSection = `<div style="padding:var(--space-lg) var(--space-md) 0;"><div style="font-size:var(--text-2xl);font-weight:800;color:var(--color-text-main);">探索專業廚藝方案</div></div>`;
+            }
+
+            let hookCard = userState === 'guest'
+                ? `<div class="hook-card fade-in" onclick="startWizard('change')">
+                     <div class="hook-content">
+                       <div class="hook-title">換菜隨身寶</div>
+                       <div class="hook-sub">輸入餐廳類型，獲得專屬菜單建議</div>
+                       <div style="margin-top:12px;background:white;color:#F57C00;padding:6px 16px;border-radius:20px;font-size:var(--text-xs);font-weight:700;display:inline-block;">開始檢測</div>
+                     </div>
+                     <span class="material-symbols-outlined" style="font-size:80px;color:rgba(255,255,255,0.3);position:absolute;right:-10px;bottom:-10px;">restaurant_menu</span>
+                   </div>`
+                : '';
+
             return `
             <div class="fade-in">
-                <div style="padding:24px 16px 0;"><div style="font-size:12px;color:var(--primary);font-weight:700;">👋 早安，張主廚</div><div style="font-size:22px;font-weight:800;color:#333;">為你推薦：懶人食譜</div></div>
-                <div class="section-header"><div class="section-title"><span class="material-symbols-outlined" style="color:var(--secondary)">new_releases</span> 1月新菜上架</div></div>
-                <div class="card-scroll-container">${db.recipes.filter(r=>r.date.includes('1月')).map(r=>renderCardV(r,true)).join('')}</div>
+                ${welcomeSection}
+                ${hookCard}
+                
+                <div class="section-header"><div class="section-title"><span class="material-symbols-outlined" style="color:var(--color-secondary)">new_releases</span> 1月新菜上架</div></div>
+                <div class="card-scroll-container">${db.recipes.filter(r=>r.date.includes('01/1')).map(r=>renderCardV(r,true)).join('')}</div>
+                
                 <div class="section-header"><div class="section-title"><span class="material-symbols-outlined" style="color:#FFD700">emoji_events</span> 熱門排行</div></div>
-                <div style="margin:0 16px;"><div class="ranking-tabs"><div class="ranking-tab active" onclick="switchRanking(this,'recipe')">專業食譜</div><div class="ranking-tab" onclick="switchRanking(this,'info')">餐飲情報</div></div><div id="ranking-list">${renderRanking('recipe')}</div></div>
-                <div style="padding:24px 16px;"><div onclick="openSOP()" style="background:linear-gradient(135deg,#6A1B9A,#4A148C);border-radius:16px;padding:24px;color:white;display:flex;align-items:center;gap:16px;box-shadow:var(--shadow-md);cursor:pointer;"><span class="material-symbols-outlined" style="font-size:32px;">bolt</span><div><div style="font-weight:700;font-size:16px;">3步驟出餐 SOP</div><div style="font-size:12px;opacity:0.8;">午餐高峰救星</div></div></div></div>
-                <div class="section-header"><div class="section-title">精選推薦</div></div><div id="home-list" class="card-scroll-container">${db.recipes.map(r=>renderCardV(r)).join('')}</div>
+                <div style="margin:0 var(--space-md);">
+                    <div class="ranking-tabs">
+                        <div class="ranking-tab active" onclick="switchRanking(this,'products')">康寶人氣熱銷</div>
+                        <div class="ranking-tab" onclick="switchRanking(this,'recipe')">專業食譜</div>
+                        <div class="ranking-tab" onclick="switchRanking(this,'info')">餐飲情報</div>
+                    </div>
+                    <div id="ranking-list">${renderRanking('products')}</div>
+                </div>
+                
+                <div style="padding:var(--space-lg) var(--space-md);"><div onclick="openSOP()" style="background:linear-gradient(135deg,#6A1B9A,#4A148C);border-radius:var(--radius-lg);padding:24px;color:white;display:flex;align-items:center;gap:16px;box-shadow:var(--shadow-md);cursor:pointer;"><span class="material-symbols-outlined" style="font-size:32px;">bolt</span><div><div style="font-weight:700;font-size:var(--text-base);">3步驟出餐 SOP</div><div style="font-size:var(--text-xs);opacity:0.8;">午餐高峰救星</div></div></div></div>
             </div>`;
         }
+
+        // --- Shop Page ---
+        function renderShop() {
+            const cats = ['全品項', '鮮味調料', '中式醬料', '西式醬汁', '湯粉'];
+            const catHtml = `<div class="tab-bar"><div class="scrolling-wrapper">${cats.map((c,i)=>`<div class="tab-chip ${i===0?'active':''}" onclick="this.parentElement.querySelectorAll('.tab-chip').forEach(el=>el.classList.remove('active'));this.classList.add('active');">${c}</div>`).join('')}</div></div>`;
+            
+            const gridHtml = db.shopProducts.map(p => {
+                const priceDisplay = userState === 'member' ? p.price : "登入查看批發價";
+                const priceStyle = userState === 'member' ? 'color:var(--color-secondary);' : 'color:var(--color-primary);text-decoration:underline;cursor:pointer;';
+                const priceAction = userState === 'member' ? '' : 'onclick="event.stopPropagation();openReg()"';
+
+                return `
+                <div class="card" onclick="openDetail('product',${p.id})">
+                    <div class="card-img-wrapper" style="padding-top:100%;background:white;">
+                        <img class="card-img" src="${p.img}" style="object-fit:contain;padding:20px;">
+                    </div>
+                    <div class="card-content">
+                        <div class="card-title" style="font-size:14px;margin-bottom:4px;">${p.name}</div>
+                        <div style="font-size:12px;color:#888;margin-bottom:8px;">${p.pack}</div>
+                        <div style="font-weight:700;${priceStyle}" ${priceAction}>${priceDisplay}</div>
+                    </div>
+                </div>`;
+            }).join('');
+
+            return `
+                <div class="fade-in">
+                    ${catHtml}
+                    <div class="recipe-grid" style="padding-top:16px;">
+                        ${gridHtml}
+                    </div>
+                </div>
+            `;
+        }
+
+        // Updated Profile Page
+        function renderProfile() {
+            return `
+            <div class="fade-in">
+                <div class="profile-bg">
+                    <div class="profile-user">
+                        <div class="profile-avatar">張</div>
+                        <div>
+                            <div style="font-size:var(--text-2xl);font-weight:700;">張大廚</div>
+                            <div style="font-size:var(--text-sm);opacity:0.9;background:rgba(255,255,255,0.2);padding:2px 8px;border-radius:10px;display:inline-block;">金牌會員</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="profile-card">
+                    <div class="barcode-area" style="text-align: center; padding: var(--space-md) 0; border-bottom: 1px dashed var(--color-border); margin-bottom: var(--space-md);">
+                        <div style="font-size:var(--text-xs);color:var(--color-text-muted);margin-bottom:8px;">會員條碼 (點擊放大)</div>
+                        <img class="barcode-img" style="height:60px;opacity:0.8;" src="https://bwipjs-api.metafloor.com/?bcid=code128&text=123456789&height=10&scale=2&includetext" alt="barcode">
+                    </div>
+                    <div class="menu-grid">
+                        <div class="menu-btn" onclick="alert('票券功能開發中')">
+                            <div class="menu-btn-icon"><span class="material-symbols-outlined">confirmation_number</span></div>
+                            <div style="font-weight:700;">票券夾</div>
+                            <div style="font-size:11px;color:var(--color-text-muted);">0 張優惠券</div>
+                        </div>
+                        <div class="menu-btn" onclick="openMyMenu()">
+                            <div class="menu-btn-icon"><span class="material-symbols-outlined">favorite</span></div>
+                            <div style="font-weight:700;">我的菜單</div>
+                            <div style="font-size:11px;color:var(--color-text-muted);">${db.recipes.filter(r=>r.isSaved).length} 道收藏</div>
+                        </div>
+                        <div class="menu-btn" onclick="alert('歷史訂單')">
+                            <div class="menu-btn-icon"><span class="material-symbols-outlined">history</span></div>
+                            <div style="font-weight:700;">歷史訂單</div>
+                            <div style="font-size:11px;color:var(--color-text-muted);">近3個月</div>
+                        </div>
+                        <div class="menu-btn" onclick="alert('帳號設定')">
+                            <div class="menu-btn-icon"><span class="material-symbols-outlined">settings</span></div>
+                            <div style="font-weight:700;">帳號設定</div>
+                            <div style="font-size:11px;color:var(--color-text-muted);">修改資料</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="support-btn" onclick="alert('開啟線上客服視窗')">
+                    <span class="material-symbols-outlined">support_agent</span> 聯繫線上客服
+                </div>
+                
+                <div class="logout-btn" onclick="logout()">
+                    <span class="material-symbols-outlined">logout</span> 登出帳號
+                </div>
+            </div>`;
+        }
+
+        function openMyMenu() {
+            const savedRecipes = db.recipes.filter(r => r.isSaved);
+            document.getElementById('app-root').innerHTML = `
+                <header><div class="header-top"><span class="material-symbols-outlined icon-btn" onclick="router('profile')">arrow_back</span><div style="flex:1;text-align:center;color:white;font-weight:700;">我的菜單</div><span style="width:24px;"></span></div></header>
+                <div class="fade-in" style="padding-top:var(--space-md);">
+                    ${savedRecipes.length === 0 ? '<div style="text-align:center;padding:40px;color:#999;">還沒有收藏任何食譜喔！</div>' : 
+                      `<div class="recipe-grid">${savedRecipes.map(r=>renderCardV(r)).join('')}</div>`}
+                </div>
+            `;
+        }
+
+        function logout() {
+            if(confirm('確定要登出嗎？')) {
+                userState = 'guest';
+                alert('已登出，將返回首頁');
+                router('home');
+            }
+        }
+
+        // --- Other Renderers ---
         function renderRecipes() {
             return `
                 <div class="chef-banner fade-in" onclick="openChef()"><div style="z-index:1;"><div>米其林主廚</div><div style="font-size:20px;font-weight:800;margin-top:4px;">江振誠 獨家授權</div></div><span class="material-symbols-outlined" style="font-size:48px;">restaurant_menu</span></div>
@@ -371,37 +685,7 @@
                 <div id="recipe-list" class="recipe-grid fade-in">${db.recipes.map(r=>renderCardV(r)).join('')}</div>
             `;
         }
-        function renderInfo() { return `<div id="info-list" class="fade-in" style="padding-top:16px;">${db.info.map(i=>renderListCard(i)).join('')}</div>`; }
-        
-        // Task 4: Profile Page
-        function renderProfile() {
-            return `
-            <div class="fade-in">
-                <div class="profile-header">
-                    <div class="profile-user">
-                        <div class="profile-avatar">張</div>
-                        <div>
-                            <div style="font-size:20px;font-weight:700;">張大廚</div>
-                            <div style="font-size:14px;opacity:0.8;">金牌會員</div>
-                        </div>
-                    </div>
-                </div>
-                <div class="profile-card">
-                    <div class="barcode-area">
-                        <div style="font-size:12px;color:#888;margin-bottom:8px;">會員條碼</div>
-                        <img class="barcode-img" src="https://bwipjs-api.metafloor.com/?bcid=code128&text=123456789&height=10&scale=2&includetext" alt="barcode">
-                    </div>
-                    <div class="menu-grid">
-                        <div class="menu-btn"><div class="menu-btn-icon"><span class="material-symbols-outlined">confirmation_number</span></div><div>票券夾</div></div>
-                        <div class="menu-btn"><div class="menu-btn-icon"><span class="material-symbols-outlined">favorite</span></div><div>我的菜單</div></div>
-                    </div>
-                </div>
-                <div class="support-btn" onclick="alert('開啟線上客服視窗')">
-                    <span class="material-symbols-outlined">support_agent</span> 聯繫線上客服
-                </div>
-            </div>`;
-        }
-
+        function renderInfo() { return `<div id="info-list" class="fade-in" style="padding-top:var(--space-md);">${db.info.map(i=>renderListCard(i)).join('')}</div>`; }
         function renderScanPage() {
             document.getElementById('app-root').innerHTML = `
                 <div class="scan-container fade-in">
@@ -410,9 +694,8 @@
                     <div class="rewards-panel"><div class="progress-header"><span class="points-text">目前: 850點</span><span class="goal-text">差 150 點換 $100</span></div><div class="progress-track"><div class="progress-fill"></div></div><div style="font-size:14px;font-weight:700;margin-bottom:12px;">快速兌換 (v19)</div><div class="instant-rewards"><div class="reward-card">🏪 7-11</div><div class="reward-card">💬 Line Pts</div></div></div>
                 </div>`;
         }
-        function renderShop() { return `<div style="text-align:center;padding:60px;color:#999;">商城載入中...</div>`; }
 
-        // --- Interaction ---
+        // --- Standard Logic & Helpers ---
         function filterList(el, filter, ctx) {
             el.parentElement.querySelectorAll('.tab-chip').forEach(c=>c.classList.remove('active')); el.classList.add('active');
             if(ctx==='recipes') {
@@ -428,102 +711,155 @@
             document.getElementById('ranking-list').innerHTML = renderRanking(type);
         }
         function simulateScan() { document.getElementById('scan-toast').classList.add('show'); setTimeout(()=>document.getElementById('scan-toast').classList.remove('show'),2000); }
-
-        // --- Renderers ---
-        function renderCardV(r, badgeDate=false) {
-            return `<div class="card" onclick="openDetail('recipe',${r.id})"><div class="card-img-wrapper"><div class="card-badge" style="${badgeDate?'background:var(--secondary)':''}">${badgeDate?r.date:r.type}</div><img class="card-img" src="${r.img}"></div><div class="card-content"><div class="card-title">${r.title}</div><div class="card-meta"><span class="meta-tag">💰 ${r.stats.cost}</span><span class="meta-tag">⏱ ${r.stats.time}</span><span class="meta-tag">🔥 ${r.stats.diff}</span></div></div></div>`;
-        }
-        function renderListCard(i, rank) {
-            return `<div class="list-card" onclick="openDetail('info',${i.id})">${rank?`<div class="rank-badge rank-${rank}">${rank}</div>`:''}<div style="flex:1;"><div style="font-size:12px;color:var(--primary);font-weight:700;">#${i.category.toUpperCase()} ${i.isNew?'<span style="color:red;">● 新上架</span>':''}</div><div style="font-weight:700;margin-top:4px;">${i.title}</div><div style="font-size:12px;color:#888;">${i.views} 閱讀</div></div><img class="list-card-img" src="${i.img}"></div>`;
-        }
-        function renderRanking(type) {
-            const list = type==='recipe' ? db.recipes.slice(0,3) : db.info.slice(0,3);
-            if(type==='recipe') return list.map((r,i)=>`<div class="list-card" onclick="openDetail('recipe',${r.id})"><div class="rank-badge rank-${i+1}">${i+1}</div><div style="flex:1;margin-left:8px;"><div style="font-weight:700;">${r.title}</div><div style="font-size:12px;color:#666;">${r.desc}</div></div><img class="list-card-img" src="${r.img}"></div>`).join('');
-            return list.map((i,idx)=>renderListCard(i,idx+1)).join('');
-        }
-
-        // --- Task 1: Optimized Wizard Logic based on Flowchart ---
-        let wizardState = { type: null, step: 0, selections: [], path: null };
         
-        function startWizard(type) { 
-            wizardState = { type, step: 0, selections: [], path: null }; 
-            document.getElementById('wizard-title').innerText = type === 'change' ? "我要換菜" : "快速出餐";
-            renderWizardStep(); 
-            document.getElementById('wizard-content').style.display = 'block'; 
-            document.getElementById('wizard-loading').style.display = 'none'; 
-            document.getElementById('wizard-overlay').style.display = 'flex'; 
-        }
+        // ** Updated Grid Card: Conditional Save Button **
+        function renderCardV(r, badgeDate=false) {
+            const saveBtnHtml = userState === 'member' 
+                ? `<div class="btn-save-mini card-save-pos ${r.isSaved?'active':''}" onclick="toggleSaveList(event, 'recipe', ${r.id})">
+                     <span class="material-symbols-outlined">${r.isSaved?'favorite':'favorite_border'}</span>
+                   </div>` 
+                : '';
 
-        function renderWizardStep() {
-            let q = "", o = [];
-            
-            // Logic based on Flowchart
-            if (wizardState.type === 'change') {
-                if (wizardState.step === 0) {
-                    q = "請問您想主打什麼？";
-                    o = ["季節限定", "節慶特餐"];
-                } else if (wizardState.step === 1) {
-                    if (wizardState.selections[0] === "季節限定") {
-                        q = "選擇月份";
-                        o = ["1~3月 (春)", "4~6月 (夏)", "7~9月 (秋)", "10~12月 (冬)"];
-                    } else {
-                        q = "選擇節慶";
-                        o = ["過年", "母親節", "端午節", "中秋節"];
-                    }
-                } else if (wizardState.step === 2) {
-                    q = "選擇核心食材";
-                    o = ["雞肉", "豬肉", "牛肉", "海鮮"];
-                } else if (wizardState.step === 3) {
-                    q = "選擇菜系風格";
-                    o = ["中式", "西式", "日式", "泰式"];
-                }
+            return `
+            <div class="card" onclick="openDetail('recipe',${r.id})">
+                <div class="card-img-wrapper">
+                    <div class="card-badge" style="${badgeDate?'background:var(--color-secondary)':''}">${r.type}</div>
+                    ${saveBtnHtml}
+                    <img class="card-img" src="${r.img}">
+                </div>
+                <div class="card-content">
+                    <div class="card-title">${r.title}</div>
+                    <div class="card-meta">
+                        <span class="meta-tag">💰 ${r.stats.cost}</span>
+                        <span class="meta-tag">⏱ ${r.stats.time}</span>
+                        <span class="meta-tag">🔥 ${r.stats.diff}</span>
+                    </div>
+                    <div class="card-bottom-info">
+                        <span>${r.date}</span>
+                        <span>•</span>
+                        <span><span class="material-symbols-outlined" style="font-size:10px;vertical-align:middle;">visibility</span> ${r.views}</span>
+                    </div>
+                </div>
+            </div>`;
+        }
+        
+        // ** Updated ListCard **
+        function renderListCard(i, rank) {
+            const saveBtnHtml = userState === 'member' && rank 
+                ? `<div class="btn-save-mini ${i.isSaved?'active':''}" onclick="toggleSaveList(event, 'info', ${i.id})">
+                     <span class="material-symbols-outlined">${i.isSaved?'favorite':'favorite_border'}</span>
+                   </div>`
+                : '';
+
+            return `
+            <div class="list-card" onclick="openDetail('info',${i.id})">
+                ${rank?`<div class="rank-badge rank-${rank}">${rank}</div>`:''}
+                <div style="flex:1;">
+                    <div style="font-size:var(--text-xs);color:var(--color-primary);font-weight:700;">#${i.category.toUpperCase()} ${i.isNew?'<span style="color:var(--color-danger);">● 新上架</span>':''}</div>
+                    <div style="font-weight:700;margin-top:4px;">${i.title}</div>
+                    <div class="ranking-meta-row">
+                        <span>${i.date}</span>
+                        <span>•</span>
+                        <span><span class="material-symbols-outlined" style="font-size:10px;vertical-align:middle;">visibility</span> ${i.views}</span>
+                    </div>
+                </div>
+                <div style="display:flex;flex-direction:column;align-items:flex-end;gap:8px;">
+                    <img class="list-card-img" src="${i.img}">
+                    ${saveBtnHtml}
+                </div>
+            </div>`;
+        }
+        
+        // ** Updated Ranking Logic: Save Button Removed from Ranking **
+        function renderRanking(type) {
+            if (type === 'products') {
+                return db.topProducts.map((p, i) => `
+                    <div class="list-card" onclick="openDetail('product', ${p.id})">
+                        <div class="rank-badge rank-${i+1}">${i+1}</div>
+                        <div style="flex:1;margin-left:8px;">
+                            <div style="font-weight:700;">${p.name}</div>
+                            <div style="font-size:var(--text-xs);color:var(--color-secondary);display:flex;align-items:center;gap:4px;margin-top:4px;">
+                                <span class="material-symbols-outlined" style="font-size:14px;">local_fire_department</span>
+                                ${p.sales}
+                            </div>
+                        </div>
+                        <img class="list-card-img" src="${p.img}" style="object-fit:contain;padding:4px;background:#fff;border:1px solid #eee;">
+                    </div>
+                `).join('');
+            } else if (type === 'recipe') {
+                const list = db.recipes.slice(0,3);
+                return list.map((r,i) => {
+                    // Removed saveBtnHtml block here
+                    return `
+                    <div class="list-card" onclick="openDetail('recipe',${r.id})">
+                        <div class="rank-badge rank-${i+1}">${i+1}</div>
+                        <div style="flex:1; margin-left:8px; display:flex; flex-direction:column; justify-content:space-between;">
+                            <div style="font-weight:700; line-height:1.3; margin-bottom:4px;">${r.title}</div>
+                            <div class="card-meta" style="margin-top:0; margin-bottom:4px;">
+                                <span class="meta-tag">💰 ${r.stats.cost}</span>
+                                <span class="meta-tag">⏱ ${r.stats.time}</span>
+                                <span class="meta-tag">🔥 ${r.stats.diff}</span>
+                            </div>
+                            <div class="ranking-meta-row">
+                                <span>${r.date}</span>
+                                <span>•</span>
+                                <span><span class="material-symbols-outlined" style="font-size:10px;vertical-align:middle;">visibility</span> ${r.views}</span>
+                            </div>
+                        </div>
+                        <div style="display:flex; flex-direction:column; align-items:flex-end; gap:8px;">
+                            <img class="list-card-img" src="${r.img}">
+                        </div>
+                    </div>`;
+                }).join('');
             } else {
-                // Fast Prep Flow
-                if (wizardState.step === 0) {
-                    q = "目標出餐時間";
-                    o = ["3 分鐘內", "5 分鐘內", "10 分鐘內"];
-                } else if (wizardState.step === 1) {
-                    q = "現有烹調設備";
-                    o = ["快速爐", "蒸烤箱", "油炸鍋"];
+                const list = db.info.slice(0,3);
+                // Also remove save button from Info ranking by passing rank=false or modifying renderListCard logic for ranking context?
+                // renderListCard uses 'rank' parameter to decide on badge AND save button.
+                // To keep it simple based on request "Remove collection from hot ranking", I'll modify renderRanking for info to NOT use the standard renderListCard or pass a flag to hide save button.
+                // Let's manually render info ranking to be safe and clean.
+                return list.map((i,idx) => `
+                    <div class="list-card" onclick="openDetail('info',${i.id})">
+                        <div class="rank-badge rank-${idx+1}">${idx+1}</div>
+                        <div style="flex:1;">
+                            <div style="font-size:var(--text-xs);color:var(--color-primary);font-weight:700;">#${i.category.toUpperCase()} ${i.isNew?'<span style="color:var(--color-danger);">● 新上架</span>':''}</div>
+                            <div style="font-weight:700;margin-top:4px;">${i.title}</div>
+                            <div class="ranking-meta-row">
+                                <span>${i.date}</span>
+                                <span>•</span>
+                                <span><span class="material-symbols-outlined" style="font-size:10px;vertical-align:middle;">visibility</span> ${i.views}</span>
+                            </div>
+                        </div>
+                        <div style="display:flex;flex-direction:column;align-items:flex-end;gap:8px;">
+                            <img class="list-card-img" src="${i.img}">
+                        </div>
+                    </div>`).join('');
+            }
+        }
+        
+        function toggleSaveList(e, type, id) {
+            e.stopPropagation(); 
+            if(userState === 'guest') { return; } 
+            
+            const list = type === 'recipe' ? db.recipes : db.info;
+            const item = list.find(x => x.id === id);
+            
+            if(item) {
+                item.isSaved = !item.isSaved;
+                if(document.querySelector('.nav-item.active').innerText.includes('首頁')) {
+                    document.getElementById('app-root').innerHTML = renderHeader('home') + renderHome();
+                } else if(document.querySelector('.nav-item.active').innerText.includes('專業食譜')) {
+                    document.getElementById('recipe-list').innerHTML = db.recipes.map(r=>renderCardV(r)).join(''); 
+                }
+                const activeTab = document.querySelector('.ranking-tab.active');
+                if(activeTab && document.getElementById('ranking-list')) {
+                    const currentType = activeTab.innerText === '專業食譜' ? 'recipe' : 
+                                        activeTab.innerText === '餐飲情報' ? 'info' : 'products';
+                     document.getElementById('ranking-list').innerHTML = renderRanking(currentType);
                 }
             }
-
-            document.getElementById('wizard-content').innerHTML = `
-                <div style="text-align:center;">
-                    <div style="font-size:20px;font-weight:700;margin-bottom:24px;">${q}</div>
-                    <div class="wizard-option-grid">${o.map(opt => `<div class="wizard-option" onclick="handleOptionClick('${opt}')">${opt}</div>`).join('')}</div>
-                </div>`; 
-            
-            // Calculate total steps based on current path
-            let totalSteps = wizardState.type === 'change' ? 4 : 2;
-            document.getElementById('wizard-progress').innerHTML = Array(totalSteps).fill(0).map((_,i)=>`<div class="progress-bar ${i<=wizardState.step?'active':''}"></div>`).join('');
         }
 
-        function handleOptionClick(sel) { 
-            wizardState.selections.push(sel); 
-            let totalSteps = wizardState.type === 'change' ? 4 : 2;
-            
-            if (wizardState.step < totalSteps - 1) { 
-                wizardState.step++; 
-                renderWizardStep(); 
-            } else { 
-                document.getElementById('wizard-content').style.display = 'none'; 
-                document.getElementById('wizard-loading').style.display = 'block'; 
-                setTimeout(() => { closeWizard(); renderRecommendationResults(wizardState.selections); }, 1500); 
-            } 
-        }
-
-        function closeWizard() { document.getElementById('wizard-overlay').style.display = 'none'; }
-
-        function renderRecommendationResults(tags) {
-            document.getElementById('app-root').innerHTML = `
-                <header><div class="header-top"><span class="material-symbols-outlined icon-btn" onclick="router('recipes')">arrow_back</span><div style="flex:1;text-align:center;color:white;font-weight:700;">推薦結果</div><span style="width:24px;"></span></div></header>
-                <div class="result-context fade-in"><div class="result-context-title"><span class="material-symbols-outlined" style="font-size:18px;">auto_awesome</span> 為您推薦 10 道最佳方案</div><div class="result-chips">${tags.map(t => `<div class="result-chip">${t}</div>`).join('')}</div></div>
-                <div class="recipe-grid fade-in" style="padding-top:0;">${db.recipes.map(r => renderCardV(r)).join('')}</div>`;
-            window.scrollTo(0,0);
-        }
-
-        // --- Detail View Logic ---
+        // --- Detail View Logic (Updated Footer) ---
         let currentRecipe = null;
         let currentPortion = 0;
         let editingCommentIndex = -1;
@@ -537,14 +873,71 @@
                 currentRecipe = db.recipes.find(x=>x.id===id) || db.recipes[0];
                 window.currentRecipeId = id;
                 currentPortion = currentRecipe.baseServings || 10;
-                
                 renderRecipeDetail(currentRecipe);
+                
+                // Logic: Footer Buttons with Gate
+                let footerContent = '';
+                if(userState === 'member') {
+                    const isSaved = currentRecipe.isSaved;
+                    const saveBtnText = isSaved ? "已收藏" : "收藏";
+                    const saveBtnIcon = isSaved ? "favorite" : "favorite_border";
+                    footerContent = `
+                        <button class="btn-outline" onclick="toggleSave()"><span class="material-symbols-outlined">${saveBtnIcon}</span> ${saveBtnText}</button>
+                        <button class="btn-primary" onclick="goToProduct()"><span class="material-symbols-outlined">shopping_cart_checkout</span> 領試用包</button>
+                    `;
+                } else {
+                    // Guest: Only show "Get Trial"
+                    footerContent = `
+                        <button class="btn-primary" style="flex:1" onclick="openReg()"><span class="material-symbols-outlined">shopping_cart_checkout</span> 領試用包</button>
+                    `;
+                }
+                footerSlot.innerHTML = `<div class="detail-footer fade-in">${footerContent}</div>`;
+
+            } else if (type === 'product') {
+                let p = db.shopProducts.find(x => x.id === id);
+                if (!p) p = db.topProducts.find(x => x.id === id);
+                if(p && !p.desc) { 
+                    p.desc = "康寶專業餐飲系列，提供穩定的品質與風味。"; 
+                    p.features = ["穩定出餐", "節省工時", "風味標準化"];
+                    p.pack = "規格請洽業務";
+                    p.price = "價格請登入查看";
+                }
+
+                // Price Logic for Detail
+                const priceDisplay = userState === 'member' ? p.price : "登入查看批發價";
+                const priceStyle = userState === 'member' ? 'color:var(--color-secondary);' : 'color:var(--color-primary);text-decoration:underline;cursor:pointer;';
+                const priceAction = userState === 'member' ? '' : 'onclick="openReg()"';
+
+                document.getElementById('detail-img').src = p.img;
+                document.getElementById('detail-img').style.objectFit = 'contain';
+                document.getElementById('detail-img').style.padding = '40px';
+                document.getElementById('detail-img').style.background = 'white';
+                
+                document.getElementById('detail-content').innerHTML = `
+                    <div style="font-size:24px;font-weight:700;margin-bottom:8px;">${p.name}</div>
+                    <div style="font-size:18px;font-weight:700;margin-bottom:16px;${priceStyle}" ${priceAction}>${priceDisplay}</div>
+                    <div style="background:#f9f9f9;padding:16px;border-radius:12px;margin-bottom:24px;">
+                        <div style="color:#666;font-size:13px;margin-bottom:4px;">包裝規格</div>
+                        <div style="font-weight:700;">${p.pack}</div>
+                    </div>
+                    <h3 class="section-header-detail" style="margin-top:0;">產品介紹</h3>
+                    <div style="line-height:1.6;color:#444;margin-bottom:24px;">${p.desc}</div>
+                    
+                    <h3 class="section-header-detail">產品優勢</h3>
+                    <ul style="padding-left:20px;color:#444;line-height:1.8;">
+                        ${p.features ? p.features.map(f => `<li>${f}</li>`).join('') : ''}
+                    </ul>
+                `;
+                
+                // Footer Gate logic
+                const action = userState === 'member' ? "alert('聯絡業務/加入購物車...')" : "openReg()";
                 
                 footerSlot.innerHTML = `
                     <div class="detail-footer fade-in">
-                        <button class="btn-outline" onclick="addToMenu()"><span class="material-symbols-outlined">post_add</span> 加入菜單</button>
-                        <button class="btn-primary" onclick="goToProduct()"><span class="material-symbols-outlined">shopping_cart_checkout</span> 領試用包</button>
+                        <button class="btn-outline" onclick="${action}"><span class="material-symbols-outlined">support_agent</span> 聯絡業務</button>
+                        <button class="btn-primary" onclick="${action}"><span class="material-symbols-outlined">shopping_cart</span> 立即購買</button>
                     </div>`;
+
             } else {
                 renderInfoDetail(db.info.find(x=>x.id===id));
                 footerSlot.innerHTML = '';
@@ -553,14 +946,33 @@
 
         function renderRecipeDetail(r) {
             document.getElementById('detail-img').src = r.img;
+            document.getElementById('detail-img').style.objectFit = 'cover';
+            document.getElementById('detail-img').style.padding = '0';
             const ingHtml = generateIngredientList(r.ingredients, r.baseServings || 10, currentPortion);
 
+            // Conditional Note Section for Members
+            let noteHtml = '';
+            if(userState === 'member') {
+                noteHtml = `
+                <div style="background:#f0f7f2; padding:16px; border-radius:12px; margin:24px 0;">
+                    <div style="font-weight:700; display:flex; align-items:center; gap:8px;">
+                        <span class="material-symbols-outlined" style="color:var(--color-primary)">edit_note</span> 
+                        👨‍🍳 我的筆記
+                    </div>
+                    <textarea class="note-area" id="recipe-note" placeholder="記錄調整的口味、成本或心得...">${r.note || ''}</textarea>
+                    <button class="btn-save-note" onclick="saveNote()">儲存筆記</button>
+                    <div style="clear:both;"></div>
+                </div>`;
+            }
+
             const html = `
-                <div style="font-size:24px;font-weight:700;">${r.title}</div>
+                <div style="font-size:var(--text-3xl);font-weight:700;">${r.title}</div>
                 <div class="tag-row">${r.tags ? r.tags.map(t=>`<span class="detail-tag">${t}</span>`).join('') : ''}</div>
                 <div class="info-grid"><div class="info-box"><div class="info-label">成本</div><div class="info-value">${r.stats.cost}</div></div><div class="info-box"><div class="info-label">時間</div><div class="info-value">${r.stats.time}</div></div><div class="info-box"><div class="info-label">難度</div><div class="info-value">${r.stats.diff}</div></div></div>
                 
-                <h3 class="section-header-detail">所需材料 <span style="font-size:12px;color:#888;font-weight:400;margin-left:auto;">可依人數調整</span></h3>
+                ${noteHtml}
+
+                <h3 class="section-header-detail">所需材料 <span style="font-size:var(--text-xs);color:var(--color-text-muted);font-weight:400;margin-left:auto;">可依人數調整</span></h3>
                 
                 <div class="portion-control">
                     <div class="portion-btn" onclick="updatePortion(-1)">-</div>
@@ -574,45 +986,37 @@
                 <div class="ing-group" id="ing-list">${ingHtml}</div>
                 
                 <h3 class="section-header-detail">烹調步驟</h3>
-                ${r.steps && r.steps.length > 0 ? r.steps.map((s,i)=>`<div class="step-row" style="margin-bottom:16px;display:flex;gap:12px;"><div class="step-idx" style="background:var(--primary);color:white;width:24px;height:24px;border-radius:50%;display:flex;justify-content:center;align-items:center;font-size:12px;flex-shrink:0;">${i+1}</div><div style="flex:1;"><div style="font-weight:700;margin-bottom:4px;">${s.t}</div><div style="color:#555;">${s.c}</div></div></div>`).join('') : '<div style="color:#999;">暫無步驟</div>'}
+                ${r.steps && r.steps.length > 0 ? r.steps.map((s,i)=>`<div class="step-row" style="margin-bottom:var(--space-md);display:flex;gap:12px;"><div class="step-idx" style="background:var(--color-primary);color:white;width:24px;height:24px;border-radius:50%;display:flex;justify-content:center;align-items:center;font-size:var(--text-xs);flex-shrink:0;">${i+1}</div><div style="flex:1;"><div style="font-weight:700;margin-bottom:4px;">${s.t}</div><div style="color:var(--color-text-body);">${s.c}</div></div></div>`).join('') : '<div style="color:#999;">暫無步驟</div>'}
                 
-                <div style="background:#FFF3E0;padding:16px;border-radius:12px;margin:16px 0;display:flex;gap:12px;align-items:start;"><span class="material-symbols-outlined" style="color:#E65100">lightbulb</span> <div><strong>主廚 Tips：</strong> ${r.tips || "無"}</div></div>
-
-                ${r.multiUse && r.multiUse.length > 0 ?`<h3 class="section-header-detail">一醬多用</h3><div class="card-scroll-container">${r.multiUse.map(m=>`
-                    <div class="rp-card" onclick="openDetail('recipe', ${m.id})">
-                        <img class="rp-img" src="${m.img}">
-                        <div style="font-weight:700;font-size:13px;">${m.name}</div>
-                        <div style="color:var(--secondary);font-weight:700;font-size:12px;">${m.cost}</div>
-                    </div>`).join('')}</div>`:''}
+                <div style="background:#FFF3E0;padding:16px;border-radius:var(--radius-lg);margin:var(--space-md) 0;display:flex;gap:12px;align-items:start;"><span class="material-symbols-outlined" style="color:#E65100">lightbulb</span> <div><strong>主廚 Tips：</strong> ${r.tips || "無"}</div></div>
 
                 <div class="comment-section">
                     <div class="section-title" style="padding-left:0;">主廚評論區</div>
                     <div id="comments-container">${renderComments(r.comments)}</div>
                     <div class="comment-input-area">
-                        <input type="text" id="comment-input" class="comment-input" style="width:100%;border:none;background:transparent;outline:none;font-size:14px;" placeholder="分享您的試做心得...">
+                        <input type="text" id="comment-input" class="comment-input" style="width:100%;border:none;background:transparent;outline:none;font-size:var(--text-sm);" placeholder="分享您的試做心得...">
                         <button class="btn-submit" id="btn-comment-submit" onclick="submitComment()"><span class="material-symbols-outlined" style="font-size:18px;">send</span></button>
                     </div>
                 </div>
-
+                
                 <h3 class="section-header-detail">推薦商品</h3>
                 <div class="product-rec-container">
-                    ${db.products.map(p=>`
-                        <div class="product-card-sm">
-                            <img src="${p.img}">
-                            <div style="font-weight:700;font-size:14px;">${p.name}</div>
-                            <span class="material-symbols-outlined" style="margin-left:auto;color:#ccc;">chevron_right</span>
-                        </div>
-                    `).join('')}
+                    ${db.products.map(p=>`<div class="product-card-sm"><img src="${p.img}"><div style="font-weight:700;font-size:var(--text-sm);">${p.name}</div><span class="material-symbols-outlined" style="margin-left:auto;color:#ccc;">chevron_right</span></div>`).join('')}
                 </div>`;
             document.getElementById('detail-content').innerHTML = html;
         }
 
         function renderInfoDetail(i) {
             document.getElementById('detail-img').src = i.img;
-            document.getElementById('detail-content').innerHTML = `<div style="font-size:22px;font-weight:700;margin-bottom:12px;">${i.title}</div><div style="line-height:1.8;">${i.content}</div>`;
+            document.getElementById('detail-content').innerHTML = `<div style="font-size:var(--text-2xl);font-weight:700;margin-bottom:12px;">${i.title}</div><div style="line-height:1.8;">${i.content}</div>`;
         }
 
-        // --- Logic: Ingredient Scaling ---
+        function saveNote() {
+            const txt = document.getElementById('recipe-note').value;
+            currentRecipe.note = txt;
+            alert('筆記已儲存');
+        }
+
         function updatePortion(delta) {
             const newP = currentPortion + delta;
             if(newP < 1) return;
@@ -622,7 +1026,7 @@
         }
 
         function generateIngredientList(ingredients, baseP, currP, animate=false) {
-            if (!ingredients || ingredients.length === 0) return '<div style="color:#999;">暫無食材資訊</div>';
+            if (!ingredients || ingredients.length === 0) return '<div style="color:var(--color-text-muted);">暫無食材資訊</div>';
             return ingredients.map(ing => {
                 const newAmount = Math.round((ing.amount / baseP) * currP * 10) / 10;
                 return `
@@ -636,9 +1040,8 @@
             }).join('');
         }
 
-        // --- Logic: Comments ---
         function renderComments(comments) {
-            if(!comments||!comments.length) return '<div style="color:#999;font-size:13px;">尚無評論。</div>';
+            if(!comments||!comments.length) return '<div style="color:var(--color-text-muted);font-size:13px;">尚無評論。</div>';
             return comments.map((c,i) => `
                 <div class="comment-item">
                     <div class="comment-avatar">${c.user[0]}</div>
@@ -657,6 +1060,7 @@
         }
 
         function submitComment() {
+            if(userState === 'guest') { openReg(); return; }
             const input = document.getElementById('comment-input');
             const txt = input.value.trim();
             if(!txt) return;
@@ -700,32 +1104,113 @@
             }
         }
 
-        // --- Standard Logic ---
-        function addToMenu() { alert('已加入菜單！'); }
-        function goToProduct() { alert('前往相關商品頁面...'); }
+        function goToProduct() { 
+             if(userState === 'guest') { openReg(); return; }
+             alert('前往相關商品頁面...'); 
+        }
+
+        // --- Wizard Logic ---
+        let wizardState = { type: null, step: 0, selections: [], path: null };
+        function startWizard(type) { 
+            wizardState = { type, step: 0, selections: [], path: null }; 
+            document.getElementById('wizard-title').innerText = type === 'change' ? "我要換菜" : "快速出餐";
+            renderWizardStep(); 
+            document.getElementById('wizard-content').style.display = 'block'; 
+            document.getElementById('wizard-loading').style.display = 'none'; 
+            document.getElementById('wizard-overlay').style.display = 'flex'; 
+        }
+
+        function renderWizardStep() {
+            let q = "", o = [];
+            if (wizardState.type === 'change') {
+                if (wizardState.step === 0) { q = "請問您想主打什麼？"; o = ["季節限定", "節慶特餐"]; } 
+                else if (wizardState.step === 1) { 
+                    if (wizardState.selections[0] === "季節限定") { q = "選擇月份"; o = ["1~3月 (春)", "4~6月 (夏)", "7~9月 (秋)", "10~12月 (冬)"]; } 
+                    else { q = "選擇節慶"; o = ["過年", "母親節", "端午節", "中秋節"]; }
+                } 
+                else if (wizardState.step === 2) { q = "選擇核心食材"; o = ["雞肉", "豬肉", "牛肉", "海鮮"]; } 
+                else if (wizardState.step === 3) { q = "選擇菜系風格"; o = ["中式", "西式", "日式", "泰式"]; }
+            } else {
+                if (wizardState.step === 0) { q = "目標出餐時間"; o = ["3 分鐘內", "5 分鐘內", "10 分鐘內"]; } 
+                else if (wizardState.step === 1) { q = "現有烹調設備"; o = ["快速爐", "蒸烤箱", "油炸鍋"]; }
+            }
+            document.getElementById('wizard-content').innerHTML = `<div style="text-align:center;"><div style="font-size:20px;font-weight:700;margin-bottom:24px;">${q}</div><div class="wizard-option-grid">${o.map(opt => `<div class="wizard-option" onclick="handleOptionClick('${opt}')">${opt}</div>`).join('')}</div></div>`; 
+            let totalSteps = wizardState.type === 'change' ? 4 : 2;
+            document.getElementById('wizard-progress').innerHTML = Array(totalSteps).fill(0).map((_,i)=>`<div class="progress-bar ${i<=wizardState.step?'active':''}"></div>`).join('');
+        }
+
+        function handleOptionClick(sel) { 
+            wizardState.selections.push(sel); 
+            let totalSteps = wizardState.type === 'change' ? 4 : 2;
+            if (wizardState.step < totalSteps - 1) { wizardState.step++; renderWizardStep(); } 
+            else { 
+                document.getElementById('wizard-content').style.display = 'none'; 
+                document.getElementById('wizard-loading').style.display = 'block'; 
+                setTimeout(() => { closeWizard(); renderRecommendationResults(wizardState.selections); }, 1500); 
+            } 
+        }
+        function closeWizard() { document.getElementById('wizard-overlay').style.display = 'none'; }
+        function renderRecommendationResults(tags) {
+            document.getElementById('app-root').innerHTML = `
+                <header><div class="header-top"><span class="material-symbols-outlined icon-btn" onclick="router('recipes')">arrow_back</span><div style="flex:1;text-align:center;color:white;font-weight:700;">推薦結果</div><span style="width:24px;"></span></div></header>
+                <div class="result-context fade-in"><div class="result-context-title"><span class="material-symbols-outlined" style="font-size:18px;">auto_awesome</span> 為您推薦 10 道最佳方案</div><div class="result-chips">${tags.map(t => `<div class="result-chip">${t}</div>`).join('')}</div></div>
+                <div class="recipe-grid fade-in" style="padding-top:0;">${db.recipes.map(r => renderCardV(r)).join('')}</div>`;
+            window.scrollTo(0,0);
+        }
+
+        // --- Reg Logic (Intent First) ---
+        let regStep = 'login';
+        function openReg() { regStep = 'login'; renderRegStep(); document.getElementById('reg-overlay').style.display = 'flex'; }
+        function closeReg() { document.getElementById('reg-overlay').style.display = 'none'; }
+        
+        function renderRegStep() {
+            const container = document.getElementById('reg-step-container');
+            let content = '';
+            if(regStep === 'login') {
+                content = `<div style="text-align:center;margin-bottom:24px;"><h2 style="font-size:24px;font-weight:800;margin-bottom:8px;">登入 / 註冊</h2><p style="color:var(--color-text-muted);font-size:14px;">解鎖專業食譜與集點功能</p></div><button class="btn-social btn-apple" onclick="proceedToSurvey()"><span class="material-symbols-outlined"></span> 使用 Apple 登入</button><button class="btn-social btn-line" onclick="proceedToSurvey()"><span class="material-symbols-outlined">chat_bubble</span> 使用 Line 登入</button><button class="btn-social btn-phone" onclick="goToPhoneInput()"><span class="material-symbols-outlined">smartphone</span> 手機號碼登入</button><div style="text-align:center;margin-top:24px;font-size:12px;color:var(--color-text-muted);">登入即代表您同意 <span style="text-decoration:underline;">服務條款</span> 與 <span style="text-decoration:underline;">隱私權政策</span></div>`;
+            } else if(regStep === 'phone') {
+                content = `<div style="font-weight:700;margin-bottom:16px;">輸入手機號碼</div><input type="tel" class="reg-input" placeholder="09xx-xxx-xxx" value="0912-345-678"><button class="btn-reg-action" onclick="proceedToSurvey()">發送驗證碼</button><div style="text-align:center;margin-top:16px;font-size:14px;color:var(--color-primary);cursor:pointer;" onclick="openReg()">返回選擇其他方式</div>`;
+            } else if(regStep === 1) {
+                content = `<div style="text-align:center;margin-bottom:24px;"><span class="material-symbols-outlined" style="font-size:48px;color:var(--color-success);">check_circle</span><h3 style="margin-top:8px;">登入成功！</h3><p style="color:var(--color-text-muted);font-size:14px;">最後一步，讓我們為您訂製首頁內容</p></div><div style="font-weight:700;margin-bottom:16px;">您目前最想解決的難題是？</div><div style="display:flex;flex-direction:column;gap:12px;margin-bottom:16px;"><div class="survey-card" onclick="setGoal('innovation')"><div class="survey-icon"><span class="material-symbols-outlined">lightbulb</span></div><div class="survey-text-group"><div class="survey-title">開發新菜色</div><div class="survey-sub">尋找靈感、名廚技法</div></div></div><div class="survey-card" onclick="setGoal('efficiency')"><div class="survey-icon"><span class="material-symbols-outlined">speed</span></div><div class="survey-text-group"><div class="survey-title">提升出餐效率</div><div class="survey-sub">標準化 SOP、懶人包</div></div></div><div class="survey-card" onclick="setGoal('cost')"><div class="survey-icon"><span class="material-symbols-outlined">savings</span></div><div class="survey-text-group"><div class="survey-title">降低食材成本</div><div class="survey-sub">高利潤、一醬多用</div></div></div></div>`;
+            } else if(regStep === 2) {
+                content = `<div style="font-weight:700;margin-bottom:16px;">請問您的餐廳類型是？</div><div class="wizard-option-grid" style="margin-bottom:16px;">${['中式熱炒','西式餐酒館','自助餐/便當','火鍋店'].map(t=>`<div class="wizard-option" onclick="nextRegStep()">${t}</div>`).join('')}</div>`;
+            }
+            container.innerHTML = content;
+        }
+        
+        function goToPhoneInput() { regStep = 'phone'; renderRegStep(); }
+        function proceedToSurvey() { regStep = 1; renderRegStep(); }
+        function setGoal(goal) { userPrefs.goal = goal; nextRegStep(); }
+        function nextRegStep() {
+            if(regStep === 1) regStep = 2;
+            else if(regStep === 2) finishReg();
+            if(regStep !== 'finish') renderRegStep();
+        }
+        function finishReg() {
+            userState = 'member';
+            closeReg();
+            let msg = "歡迎！已為您解鎖專業功能";
+            if(userPrefs.goal === 'innovation') msg = "歡迎！已為您準備好名廚靈感專區 ✨";
+            else if(userPrefs.goal === 'efficiency') msg = "歡迎！快速出餐方案已準備就緒 ⚡";
+            alert(msg);
+            router('home');
+        }
 
         function openSOP() {
             const s = db.sop;
             document.getElementById('detail-img').src = s.img;
-            document.getElementById('detail-content').innerHTML = `<div style="font-size:24px;font-weight:700;">${s.title}</div><div style="background:#F3E5F5;padding:16px;border-radius:12px;margin:16px 0;color:#4A148C;">${s.desc}</div>${s.steps.map((st,i)=>`<div style="margin-bottom:16px;"><div style="font-weight:700;">${i+1}. ${st.title}</div><div style="font-size:13px;color:#666;">${st.text}</div></div>`).join('')}`;
+            document.getElementById('detail-content').innerHTML = `<div style="font-size:24px;font-weight:700;">${s.title}</div><div style="background:var(--color-info);padding:16px;border-radius:12px;margin:16px 0;color:var(--color-info-text);">${s.desc}</div>${s.steps.map((st,i)=>`<div style="margin-bottom:16px;"><div style="font-weight:700;">${i+1}. ${st.title}</div><div style="font-size:13px;color:#666;">${st.text}</div></div>`).join('')}`;
             document.getElementById('detail-footer-slot').innerHTML = ''; 
             document.getElementById('detail-view').style.display='block';
         }
-
         function openChef() {
             const c = db.chef;
             document.getElementById('detail-img').src = c.img;
-            // Filter all chef recipes
             const chefRecipes = db.recipes.filter(r => r.type === '名廚');
-            document.getElementById('detail-content').innerHTML = `
-                <div style="font-size:24px;font-weight:700;">${c.name}</div>
-                <div style="margin-top:16px;color:#555;">${c.desc}</div>
-                <h3 class="section-header-detail">主廚推薦食譜 (${chefRecipes.length})</h3>
-                <div class="recipe-grid" style="padding:0;">${chefRecipes.map(r=>renderCardV(r)).join('')}</div>`;
+            document.getElementById('detail-content').innerHTML = `<div style="font-size:24px;font-weight:700;">${c.name}</div><div style="margin-top:16px;color:#555;">${c.desc}</div><h3 class="section-header-detail">主廚推薦食譜 (${chefRecipes.length})</h3><div class="recipe-grid" style="padding:0;">${chefRecipes.map(r=>renderCardV(r)).join('')}</div>`;
             document.getElementById('detail-footer-slot').innerHTML = ''; 
             document.getElementById('detail-view').style.display='block';
         }
-
         function closeDetail() { document.getElementById('detail-view').style.display = 'none'; document.body.style.overflow = 'auto'; }
         function updateProgress() { const el = document.getElementById('detail-view'); document.getElementById('read-progress').style.width = (el.scrollTop / (el.scrollHeight - el.clientHeight)) * 100 + '%'; }
 

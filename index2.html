@@ -1,0 +1,735 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>康寶廚藝時代 Knorr Pro v26</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
+    <style>
+        /* --- 1. Design Tokens --- */
+        :root {
+            --primary: #00652B; --primary-light: #E6F0EA;
+            --secondary: #FF5700; --secondary-light: #FFF0E5;
+            --bg-body: #F7F9F8; --surface: #FFFFFF;
+            --text-main: #2D3330; --text-body: #4A524F; --text-muted: #8C9692;
+            
+            --sp-xs: 4px; --sp-sm: 8px; --sp-md: 16px; --sp-lg: 24px;
+            --bottom-nav-height: 80px;
+            --shadow-sm: 0 2px 8px rgba(0,0,0,0.04);
+            --shadow-md: 0 8px 24px rgba(0,101,43,0.08);
+            --shadow-up: 0 -4px 12px rgba(0,0,0,0.08);
+            --radius-lg: 16px;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        body { background: var(--bg-body); color: var(--text-main); font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; padding-bottom: var(--bottom-nav-height); line-height: 1.6; }
+
+        /* --- 2. Shared Components --- */
+        header { background: var(--surface); position: sticky; top: 0; z-index: 90; box-shadow: var(--shadow-sm); }
+        .header-top { background: var(--primary); padding: 8px 16px; height: 56px; display: flex; align-items: center; gap: 16px; color: white; }
+        .search-bar { flex: 1; background: rgba(255,255,255,0.15); border-radius: 30px; height: 36px; display: flex; align-items: center; padding: 0 16px; font-size: 14px; }
+        .icon-btn { cursor: pointer; color: white; }
+
+        .tab-bar { padding: 12px 0; background: var(--surface); border-bottom: 1px solid #eee; }
+        .scrolling-wrapper { display: flex; overflow-x: auto; gap: 8px; padding: 0 16px; scrollbar-width: none; }
+        .tab-chip { padding: 6px 16px; border-radius: 20px; font-size: 13px; font-weight: 500; color: var(--text-muted); background: #F5F5F5; white-space: nowrap; transition: 0.2s; cursor: pointer; border: 1px solid transparent; }
+        .tab-chip.active { background: var(--primary-light); color: var(--primary); font-weight: 700; border-color: rgba(0,101,43,0.2); }
+
+        .section-header { padding: 24px 16px 12px; display: flex; justify-content: space-between; align-items: center; }
+        .section-title { font-size: 18px; font-weight: 700; display: flex; align-items: center; gap: 8px; }
+        .card-scroll-container { display: flex; overflow-x: auto; gap: 16px; padding: 0 16px 16px; scrollbar-width: none; }
+        
+        .fade-in { animation: fadeIn 0.3s ease-out forwards; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* --- 3. Cards & Lists --- */
+        .card { background: var(--surface); border-radius: 16px; overflow: hidden; box-shadow: var(--shadow-sm); display: flex; flex-direction: column; cursor: pointer; position: relative; min-width: 220px; }
+        .card:active { transform: scale(0.98); transition: 0.1s; }
+        .card-img-wrapper { position: relative; padding-top: 60%; background: #eee; }
+        .card-img { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; }
+        .card-badge { position: absolute; top: 8px; left: 8px; background: rgba(0,0,0,0.7); backdrop-filter: blur(4px); color: white; font-size: 10px; font-weight: 700; padding: 4px 8px; border-radius: 4px; }
+        .card-content { padding: 12px; flex: 1; display: flex; flex-direction: column; }
+        .card-title { font-weight: 700; font-size: 15px; margin-bottom: 8px; line-height: 1.3; }
+        .card-meta { display: flex; gap: 4px; flex-wrap: wrap; margin-top: auto; }
+        .meta-tag { font-size: 10px; background: #F0F2F1; padding: 2px 6px; border-radius: 4px; color: #666; display: flex; align-items: center; gap: 2px; }
+
+        .list-card { background: var(--surface); margin: 0 16px 12px; padding: 16px; border-radius: 12px; box-shadow: var(--shadow-sm); display: flex; gap: 16px; align-items: flex-start; cursor: pointer; position: relative; }
+        .list-card-img { width: 80px; height: 80px; border-radius: 8px; object-fit: cover; background: #eee; flex-shrink: 0; }
+        .rank-badge { position: absolute; top: 0; left: 0; width: 24px; height: 24px; border-radius: 12px 0 12px 0; display: flex; justify-content: center; align-items: center; font-weight: 900; font-size: 12px; color: #fff; z-index: 2; }
+        .rank-1 { background: #FFD700; color: #333; }
+        .rank-2 { background: #C0C0C0; color: #333; }
+        .rank-3 { background: #CD7F32; }
+        
+        .ranking-tabs { display: flex; border-bottom: 1px solid #eee; margin-bottom: 12px; }
+        .ranking-tab { flex: 1; text-align: center; padding: 12px; font-size: 14px; color: var(--text-muted); cursor: pointer; border-bottom: 2px solid transparent; }
+        .ranking-tab.active { color: var(--primary); font-weight: 700; border-color: var(--primary); }
+
+        /* --- 4. Recipe Page Styles --- */
+        .chef-banner { margin: 16px; background: linear-gradient(135deg, #1a1a1a, #333); border-radius: 16px; padding: 20px; color: white; display: flex; align-items: center; justify-content: space-between; overflow: hidden; position: relative; box-shadow: var(--shadow-md); cursor: pointer; }
+        .chef-banner::after { content:''; position:absolute; right:-20px; top:-20px; width:100px; height:100px; background:var(--secondary); border-radius:50%; opacity:0.15; }
+        
+        .strategy-cta-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; padding: 0 16px 8px; margin-bottom: 8px; }
+        .strategy-btn { background: var(--surface); border-radius: 16px; padding: 16px; display: flex; flex-direction: column; align-items: center; gap: 8px; box-shadow: var(--shadow-sm); cursor: pointer; border: 1px solid #f0f0f0; transition:0.1s;}
+        .strategy-btn:active { transform: scale(0.98); background: #fafafa; }
+        .btn-icon-circle { width: 40px; height: 40px; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 24px; margin-bottom: 4px; }
+        .btn-change .btn-icon-circle { background: #E3F2FD; color: #1565C0; }
+        .btn-fast .btn-icon-circle { background: #FFF3E0; color: #E65100; }
+        .recipe-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; padding: 0 16px 24px; }
+
+        /* --- 5. Scan & Profile Page --- */
+        .scan-container { height: calc(100vh - 80px); background: #121212; display: flex; flex-direction: column; position: relative; }
+        .scan-viewfinder { flex: 1; display: flex; justify-content: center; align-items: center; position: relative; }
+        .scan-frame { width: 260px; height: 260px; border: 2px solid var(--secondary); border-radius: 24px; position: relative; box-shadow: 0 0 0 4000px rgba(0,0,0,0.7); }
+        .scan-frame::after { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; background: var(--secondary); box-shadow: 0 0 10px var(--secondary); animation: scanMove 2s infinite linear; }
+        @keyframes scanMove { 0% { top: 0; } 50% { top: 100%; } 100% { top: 0; } }
+        .scan-controls { position: absolute; top: 20px; right: 20px; z-index: 10; }
+        .toggle-btn { background: rgba(255,255,255,0.2); backdrop-filter: blur(10px); padding: 8px 16px; border-radius: 20px; color: white; font-size: 12px; font-weight: 600; display: flex; align-items: center; gap: 8px; cursor: pointer; }
+        .toggle-switch { width: 32px; height: 18px; background: rgba(0,0,0,0.3); border-radius: 10px; position: relative; transition: 0.3s; border:1px solid rgba(255,255,255,0.5); }
+        .toggle-switch.on { background: var(--secondary); border-color:var(--secondary); }
+        .toggle-switch::after { content:''; position: absolute; top: 2px; left: 2px; width: 12px; height: 12px; background: white; border-radius: 50%; transition: 0.3s; }
+        .toggle-switch.on::after { transform: translateX(14px); }
+        .rewards-panel { background: white; border-radius: 24px 24px 0 0; padding: 24px 20px; z-index: 10; }
+        .progress-header { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 8px; }
+        .progress-track { height: 8px; background: #eee; border-radius: 4px; overflow: hidden; margin-bottom: 20px; margin-top: 8px; }
+        .progress-fill { width: 85%; height: 100%; background: linear-gradient(90deg, var(--primary), #4CAF50); border-radius: 4px; }
+        .instant-rewards { display: flex; gap: 12px; }
+        .reward-card { flex: 1; border: 1px solid #eee; padding: 12px; border-radius: 12px; text-align: center; cursor: pointer; transition: 0.2s; }
+        .reward-card:active { border-color: var(--primary); background: var(--primary-light); }
+        .toast { position: absolute; bottom: 200px; left: 50%; transform: translateX(-50%); background: rgba(0, 101, 43, 0.95); color: white; padding: 12px 24px; border-radius: 30px; font-size: 14px; font-weight: 600; display: flex; align-items: center; gap: 8px; opacity: 0; transition: 0.3s; pointer-events: none; z-index: 20; box-shadow: 0 4px 12px rgba(0,0,0,0.2); }
+        .toast.show { opacity: 1; transform: translateX(-50%) translateY(-10px); }
+
+        /* Profile Styles */
+        .profile-header { background: var(--primary); padding: 32px 20px 60px; color: white; border-radius: 0 0 24px 24px; position: relative; }
+        .profile-user { display: flex; align-items: center; gap: 16px; margin-bottom: 24px; }
+        .profile-avatar { width: 64px; height: 64px; background: white; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 28px; font-weight: 700; color: var(--primary); border: 3px solid rgba(255,255,255,0.3); }
+        .profile-card { background: white; border-radius: 16px; padding: 20px; margin: -40px 16px 16px; box-shadow: var(--shadow-md); }
+        .barcode-area { text-align: center; padding: 16px 0; border-bottom: 1px dashed #eee; margin-bottom: 16px; }
+        .barcode-img { height: 60px; opacity: 0.8; }
+        .menu-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+        .menu-btn { background: #f9f9f9; padding: 16px; border-radius: 12px; text-align: center; cursor: pointer; }
+        .menu-btn-icon { font-size: 28px; margin-bottom: 8px; color: var(--primary); }
+        .support-btn { background: #E3F2FD; color: #1565C0; padding: 16px; border-radius: 12px; display: flex; justify-content: center; align-items: center; gap: 8px; margin: 0 16px; cursor: pointer; font-weight: 700; }
+
+        /* --- 6. Wizard Modal --- */
+        #wizard-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 2000; display: none; justify-content: center; align-items: flex-end; backdrop-filter: blur(4px); }
+        .wizard-container { background: var(--surface); width: 100%; border-radius: 24px 24px 0 0; padding: 32px 24px; max-height: 90vh; overflow-y: auto; position: relative; animation: slideUp 0.3s cubic-bezier(0.2, 0.8, 0.2, 1); }
+        .wizard-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
+        .wizard-progress { display: flex; gap: 6px; margin-bottom: 24px; }
+        .progress-bar { height: 6px; flex: 1; background: #f0f0f0; border-radius: 3px; transition: 0.3s; }
+        .progress-bar.active { background: var(--secondary); }
+        .wizard-option-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+        .wizard-option { padding: 20px; border: 2px solid #f0f0f0; border-radius: 16px; text-align: center; font-weight: 700; color: var(--text-body); cursor: pointer; transition: 0.2s; background: #fff; font-size: 16px; }
+        .wizard-option:active { border-color: var(--primary); background: var(--primary-light); color: var(--primary); transform: scale(0.98); }
+        .result-context { background: var(--primary-light); padding: 20px; margin: 16px; border-radius: 16px; display: flex; flex-direction: column; gap: 12px; border: 1px solid rgba(0,101,43,0.1); }
+        .result-chips { display: flex; flex-wrap: wrap; gap: 8px; }
+        .result-chip { background: white; color: var(--text-body); padding: 6px 14px; border-radius: 20px; font-size: 13px; font-weight: 600; border: 1px solid rgba(0,0,0,0.05); }
+
+        /* --- 7. Detail View (Enhanced) --- */
+        #detail-view { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--surface); z-index: 3000; overflow-y: auto; display: none; }
+        .detail-hero { height: 320px; position: relative; }
+        .detail-hero img { width: 100%; height: 100%; object-fit: cover; }
+        .detail-back { position: fixed; top: 24px; left: 20px; width: 44px; height: 44px; background: rgba(255,255,255,0.95); border-radius: 50%; display: flex; justify-content: center; align-items: center; z-index: 3010; cursor: pointer; box-shadow: var(--shadow-md); }
+        
+        .detail-body { padding: 32px 24px; background: white; border-radius: 32px 32px 0 0; margin-top: -40px; position: relative; min-height: 80vh; padding-bottom: 120px; }
+        
+        .progress-bar-top { position: fixed; top: 0; left: 0; width: 100%; height: 6px; background: #eee; z-index: 3020; display:none; }
+        .progress-bar-fill { height: 100%; background: var(--primary); width: 0%; transition: width 0.1s; }
+
+        .info-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; margin-bottom: 24px; }
+        .info-box { background: #FAFAFA; border: 1px solid #EEE; border-radius: 16px; padding: 16px 12px; text-align: center; }
+        .info-label { font-size: 12px; color: #888; margin-bottom: 4px; }
+        .info-value { font-weight: 700; color: #333; }
+
+        .section-header-detail { font-size: 18px; font-weight: 700; color: var(--text-main); margin: 32px 0 16px; display: flex; align-items: center; gap: 8px; padding-left: 12px; border-left: 4px solid var(--secondary); }
+        
+        /* Updated Ingredients & Checkbox */
+        .checkbox-item { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid #f9f9f9; cursor: pointer; }
+        .checkbox-left { display: flex; align-items: center; gap: 12px; }
+        .checkbox-circle { width: 22px; height: 22px; border: 2px solid #ddd; border-radius: 50%; transition: 0.2s; position: relative; flex-shrink: 0; }
+        .checkbox-circle.checked { background: var(--primary); border-color: var(--primary); }
+        .checkbox-circle.checked::after { content:'✓'; color:white; position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); font-size:12px; }
+        .ing-amount { font-weight: 700; color: var(--text-body); transition: color 0.3s; }
+        .ing-amount.changed { color: var(--secondary); animation: pulse 0.5s; }
+        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.1); } 100% { transform: scale(1); } }
+
+        /* New: Tags */
+        .tag-row { display: flex; flex-wrap: wrap; gap: 8px; margin: 12px 0; }
+        .detail-tag { font-size: 12px; color: var(--primary); background: var(--primary-light); padding: 4px 12px; border-radius: 20px; font-weight: 600; }
+
+        /* New: Portion Scaler */
+        .portion-control { display: flex; align-items: center; justify-content: space-between; background: #F5F5F5; border-radius: 12px; padding: 8px 16px; margin-bottom: 24px; }
+        .portion-btn { width: 32px; height: 32px; background: white; border-radius: 50%; border: 1px solid #ddd; display: flex; justify-content: center; align-items: center; cursor: pointer; color: var(--primary); font-weight: bold; user-select: none; }
+        .portion-btn:active { background: var(--primary-light); }
+        .portion-display { font-weight: 700; font-size: 16px; display: flex; flex-direction: column; align-items: center; line-height: 1.2; }
+        .portion-label { font-size: 10px; color: #888; }
+        
+        /* Multi-Use Card Style Update */
+        .rp-card { min-width: 130px; border: 1px solid #eee; border-radius: 12px; padding: 12px; text-align: center; cursor: pointer; transition: 0.2s; background: white; }
+        .rp-card:active { border-color: var(--primary); transform: scale(0.98); background: #FAFAFA; }
+        .rp-img { width: 100%; height: 80px; object-fit: cover; border-radius: 8px; margin-bottom: 8px; }
+
+        /* New: Fixed Footer CTA */
+        .detail-footer { position: fixed; bottom: 0; left: 0; width: 100%; background: white; box-shadow: var(--shadow-up); padding: 16px 24px; display: flex; gap: 12px; z-index: 3020; padding-bottom: max(16px, env(safe-area-inset-bottom)); }
+        .btn-outline { flex: 1; border: 1px solid var(--primary); color: var(--primary); background: white; border-radius: 30px; height: 48px; font-weight: 700; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 8px; }
+        .btn-primary { flex: 1; background: var(--primary); color: white; border: none; border-radius: 30px; height: 48px; font-weight: 700; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 8px; box-shadow: 0 4px 12px rgba(0,101,43,0.3); }
+
+        /* Comments New Style */
+        .comment-section { margin-top: 40px; border-top: 1px solid #eee; padding-top: 24px; }
+        .comment-item { display: flex; gap: 16px; margin-bottom: 24px; border-bottom: 1px solid #f5f5f5; padding-bottom: 16px; }
+        .comment-avatar { width: 40px; height: 40px; background: #81C784; color:white; border-radius: 50%; display:flex; justify-content:center; align-items:center; font-weight:700; flex-shrink:0; }
+        .comment-body { flex: 1; }
+        .comment-name { font-weight: 700; font-size: 14px; margin-bottom: 2px; }
+        .comment-meta { font-size: 12px; color: #777; display: flex; gap: 8px; margin-bottom: 8px; }
+        .comment-stars { color: #FBC02D; letter-spacing: 1px; }
+        .comment-text { font-size: 14px; color: #444; line-height: 1.5; }
+        .comment-actions { margin-top: 12px; display: flex; gap: 12px; }
+        .action-chip { font-size: 12px; color: #555; border: 1px solid #ddd; padding: 4px 12px; border-radius: 16px; display: flex; align-items: center; gap: 4px; cursor: pointer; transition: 0.2s; }
+        .action-chip:active { background: #f0f0f0; }
+
+        .comment-input-area { background: #F5F5F5; padding: 4px 4px 4px 16px; border-radius: 24px; display: flex; align-items: center; margin-top: 16px; border: 1px solid transparent; transition: 0.2s; }
+        .comment-input-area:focus-within { border-color: var(--primary); background: white; box-shadow: 0 0 0 4px rgba(0,101,43,0.1); }
+        .btn-submit { background: var(--primary); color: white; border: none; width: 36px; height: 36px; border-radius: 50%; display: flex; justify-content: center; align-items: center; cursor: pointer; margin-left: 8px; flex-shrink: 0; }
+        .btn-submit.editing { background: var(--secondary); }
+
+        /* Product Recommendation */
+        .product-rec-container { padding: 16px 0 32px; }
+        .product-card-sm { background: #F9F9F9; border-radius: 12px; padding: 12px; display: flex; align-items: center; gap: 12px; border: 1px solid #EEE; margin-bottom: 12px; cursor: pointer; }
+        .product-card-sm img { width: 48px; height: 48px; object-fit: contain; }
+
+        /* Nav (Updated to remove floating circle) */
+        .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; height: var(--bottom-nav-height); background: rgba(255,255,255,0.98); backdrop-filter: blur(20px); border-top: 1px solid #eee; display: flex; justify-content: space-around; padding-top: 12px; z-index: 1000; }
+        .nav-item { display: flex; flex-direction: column; align-items: center; gap: 6px; color: var(--text-muted); cursor: pointer; flex: 1; transition: 0.2s; }
+        .nav-item.active { color: var(--primary); }
+        .nav-icon-container { width: 24px; height: 24px; display: flex; justify-content: center; align-items: center; }
+        /* Points Circle Style */
+        .scan-circle-icon { width: 32px; height: 32px; background: var(--primary); color: white; border-radius: 50%; display: flex; justify-content: center; align-items: center; box-shadow: 0 2px 8px rgba(0,101,43,0.3); }
+
+    </style>
+</head>
+<body>
+
+    <div id="app-root"></div>
+
+    <div id="wizard-overlay">
+        <div class="wizard-container">
+            <div class="wizard-header">
+                <span class="wizard-title" id="wizard-title" style="font-size:20px;font-weight:700;"></span>
+                <span class="material-symbols-outlined" onclick="closeWizard()" style="cursor:pointer;padding:8px;">close</span>
+            </div>
+            <div class="wizard-progress" id="wizard-progress" style="display:flex;gap:6px;margin-bottom:24px;"></div>
+            <div id="wizard-content"></div>
+            <div id="wizard-loading" style="display:none; text-align:center; padding:60px 0;">
+                <span class="material-symbols-outlined" style="font-size:56px; color:var(--secondary); animation:spin 1s linear infinite;">progress_activity</span>
+                <p style="font-weight:700; color:var(--primary); margin-top:24px; font-size:18px;">正在推薦最佳方案</p>
+                <style>@keyframes spin { 100% { transform: rotate(360deg); } }</style>
+            </div>
+        </div>
+    </div>
+
+    <div id="detail-view" onscroll="updateProgress()">
+        <div class="progress-bar-top"><div class="progress-bar-fill" id="read-progress"></div></div>
+        <div class="detail-back" onclick="closeDetail()"><span class="material-symbols-outlined">arrow_back</span></div>
+        <div class="detail-hero"><img id="detail-img" src=""></div>
+        <div class="detail-body" id="detail-content"></div>
+        <div id="detail-footer-slot"></div> 
+    </div>
+
+    <nav class="bottom-nav">
+        <div class="nav-item active" onclick="router('home')"><span class="material-symbols-outlined">home</span><span style="font-size:10px;">首頁</span></div>
+        <div class="nav-item" onclick="router('info')"><span class="material-symbols-outlined">article</span><span style="font-size:10px;">餐飲情報</span></div>
+        <div class="nav-item" onclick="router('scan')">
+            <div class="scan-circle-icon"><span class="material-symbols-outlined" style="font-size:20px;">qr_code_scanner</span></div>
+            <span style="font-size:10px;font-weight:700;color:var(--primary);margin-top:2px;">集點</span>
+        </div>
+        <div class="nav-item" onclick="router('recipes')"><span class="material-symbols-outlined">menu_book</span><span style="font-size:10px;">專業食譜</span></div>
+        <div class="nav-item" onclick="router('shop')"><span class="material-symbols-outlined">shopping_cart</span><span style="font-size:10px;">購買</span></div>
+    </nav>
+
+    <script>
+        // --- Data ---
+        const db = {
+            recipes: [
+                { id: 1, title: "麻辣水煮魚", category: ["all","chef","spicy"], tags: ["#川菜經典", "#冬季限定", "#高利潤"], type: "名廚", date: "1月12日", img: "https://www.unileverfoodsolutions.tw/dam/global-ufs/mcos/na/taiwan/calcmenu/recipes/TW-recipes/general/%E9%BA%BB%E8%BE%A3%E6%B0%B4%E7%85%AE%E9%AD%9A/CR2024Traditional003%20(2).jpg", 
+                  stats: {time: "15分", cost: "$45", diff: "中"}, ranking: 1, reviews: 24, baseServings: 10,
+                  desc: "江振誠主廚推薦技法，透過低溫慢煮鎖住肉汁，搭配康寶麻辣醬與特製花椒油，呈現多層次香氣。",
+                  ingredients: [ {name: "鱸魚片", amount: 400, unit: "g"}, {name: "豆芽菜", amount: 200, unit: "g"}, {name: "康寶麻辣醬", amount: 3, unit: "大匙"}, {name: "康寶雞粉", amount: 1, unit: "小匙"}, {name: "花椒粒", amount: 1, unit: "大匙"} ],
+                  steps: [{t:"醃製",c:"鱸魚片切薄片，用鹽、太白粉醃製10分鐘。"}, {t:"炒醬煮湯",c:"起油鍋爆香麻辣醬，加入高湯煮滾。"}, {t:"淋油爆香",c:"魚片煮熟盛盤。另起油鍋爆香花椒、乾辣椒，淋在魚片上。"}],
+                  tips: "太白粉能讓魚肉更滑嫩，醃製時加一點蛋白效果更好。", qa: [{q:"不吃辣?",a:"改番茄湯底。"}], 
+                  multiUse: [{id: 101, name:"麻辣鍋",cost:"$30", img: "https://placehold.co/150x100/e74c3c/fff?text=Pot"},{id: 102, name:"口水雞",cost:"$50", img: "https://placehold.co/150x100/d35400/fff?text=Chicken"}],
+                  comments: [{id:1, user:"王大廚", star:5, date:"2天前", text:"客人反應很好，出餐很快！"}, {id:2, user:"李店長", star:4, date:"1週前", text:"成本控制得宜。"}]
+                },
+                { id: 2, title: "泰式打拋豬", category: ["all","lazy","low_cost"], tags: ["#異國料理", "#下飯神器"], type: "懶人包", date: "1月10日", img: "./img/thai_pork.png",
+                  stats: {time: "10分", cost: "$38", diff: "易"}, ranking: 2, reviews: 56, baseServings: 5,
+                  desc: "一醬搞定複雜調味，適合商業午餐。",
+                  ingredients: [ {name: "豬絞肉", amount: 150, unit: "g"}, {name: "九層塔", amount: 1, unit: "把"}, {name: "康寶泰式打拋醬", amount: 2, unit: "大匙"}, {name: "魚露", amount: 1, unit: "小匙"}],
+                  steps: [{t:"炒絞肉",c:"熱鍋爆香蒜末，加入豬絞肉炒至變色。"}, {t:"加醬拌炒",c:"加入打拋醬拌勻，起鍋前放九層塔。"}],
+                  tips: "大火快炒才有鑊氣，絞肉才不會出水。", qa: [{q:"用雞肉?",a:"可以。"}],
+                  multiUse: [{id: 103, name:"炒河粉",cost:"$32", img:"https://placehold.co/150x100/2ecc71/fff?text=Noodle"}, {id: 104, name:"涼拌海鮮",cost:"$45", img:"https://placehold.co/150x100/3498db/fff?text=Seafood"}], 
+                  comments: [{id:3, user:"陳師傅", star:5, date:"3天前", text:"真的只要一罐醬。"}]
+                },
+                // --- Dummy Recipes Populated with Detail ---
+                { id: 3, title: "口水雞", category: ["chef"], type: "名廚", date: "1月09日", img: "https://www.unileverfoodsolutions.tw/dam/global-ufs/mcos/na/taiwan/calcmenu/recipes/TW-recipes/general/%E5%8F%A3%E6%B0%B4%E9%9B%9E/main-header.jpg", stats: {time: "20分", cost: "$60", diff: "中"}, ranking: 3, desc: "鮮香麻辣。", 
+                  ingredients: [{name:"雞腿肉",amount:2,unit:"支"},{name:"花生",amount:50,unit:"g"},{name:"花椒油",amount:2,unit:"大匙"}], 
+                  steps: [{t:"煮雞",c:"雞肉煮熟後冰鎮切塊。"},{t:"調醬",c:"混合調味料淋在雞肉上。"}], tips: "冰鎮是皮脆肉嫩的關鍵。", multiUse: [], comments: [] },
+                { id: 4, title: "舒肥波特酒風味鴨胸乳酪燉飯", category: ["chef"], type: "名廚", date: "1月08日", img: "https://www.unileverfoodsolutions.tw/dam/global-ufs/mcos/na/taiwan/calcmenu/recipes/TW-recipes/general/%E8%88%92%E8%82%A5%E6%B3%A2%E7%89%B9%E9%85%92%E9%A2%A8%E5%91%B3%E9%B4%A8%E8%83%B8%E4%B9%B3%E9%85%AA%E7%87%89%E9%A3%AF/main-header.jpg", stats: {time: "25分", cost: "$80", diff: "難"}, ranking: 4, desc: "濃郁松露香。", 
+                  ingredients: [{name:"義大利米",amount:200,unit:"g"},{name:"綜合野菇",amount:100,unit:"g"},{name:"松露醬",amount:1,unit:"大匙"}], 
+                  steps: [{t:"炒菇",c:"野菇炒香備用。"},{t:"燉飯",c:"米炒香後分次加入高湯燉煮。"}], tips: "高湯要分次加才能煮出濃稠感。", multiUse: [], comments: [] },
+                { id: 5, title: "法式洋蔥湯", category: ["chef"], type: "名廚", date: "1月07日", img: "https://www.unileverfoodsolutions.tw/dam/global-ufs/mcos/na/taiwan/calcmenu/recipes/TW-recipes/general/%E6%B4%8B%E8%94%A5%E6%B9%AF/CR2024Beef002.jpg", stats: {time: "40分", cost: "$30", diff: "中"}, ranking: 5, desc: "經典湯品。", 
+                  ingredients: [{name:"洋蔥",amount:3,unit:"顆"},{name:"牛高湯",amount:500,unit:"ml"},{name:"起司",amount:50,unit:"g"}], 
+                  steps: [{t:"炒洋蔥",c:"小火慢炒洋蔥至焦糖色。"},{t:"煮湯",c:"加入高湯煮滾後焗烤。"}], tips: "洋蔥炒得越久越甜。", multiUse: [], comments: [] },
+                { id: 6, title: "避風塘炒蟹", category: ["chef"], type: "名廚", date: "1月06日", img: "https://placehold.co/800x600/e67e22/fff?text=Crab", stats: {time: "30分", cost: "$120", diff: "難"}, ranking: 6, desc: "香酥可口。", 
+                  ingredients: [{name:"螃蟹",amount:2,unit:"隻"},{name:"蒜酥",amount:100,unit:"g"},{name:"乾辣椒",amount:10,unit:"g"}], 
+                  steps: [{t:"炸蟹",c:"螃蟹切塊炸酥。"},{t:"拌炒",c:"爆香料後加入螃蟹拌炒。"}], tips: "蒜酥要控制火候避免反苦。", multiUse: [], comments: [] },
+                { id: 7, title: "清蒸石斑", category: ["chef"], type: "名廚", date: "1月05日", img: "https://placehold.co/800x600/3498db/fff?text=Fish", stats: {time: "15分", cost: "$150", diff: "易"}, ranking: 7, desc: "鮮甜原味。", 
+                  ingredients: [{name:"石斑魚",amount:1,unit:"尾"},{name:"蔥薑絲",amount:30,unit:"g"},{name:"蒸魚醬油",amount:2,unit:"大匙"}], 
+                  steps: [{t:"蒸魚",c:"大火蒸8分鐘。"},{t:"淋油",c:"鋪上蔥絲淋上熱油。"}], tips: "水滾後再放魚。", multiUse: [], comments: [] },
+                { id: 8, title: "紅酒燉牛肉", category: ["chef"], type: "名廚", date: "1月04日", img: "https://placehold.co/800x600/8e44ad/fff?text=Beef", stats: {time: "90分", cost: "$100", diff: "難"}, ranking: 8, desc: "入口即化。", 
+                  ingredients: [{name:"牛肋條",amount:600,unit:"g"},{name:"紅酒",amount:300,unit:"ml"},{name:"紅蘿蔔",amount:1,unit:"根"}], 
+                  steps: [{t:"煎肉",c:"牛肉煎至表面金黃。"},{t:"燉煮",c:"加入蔬菜與紅酒燉煮1.5小時。"}], tips: "隔夜加熱更好吃。", multiUse: [], comments: [] },
+                { id: 9, title: "XO醬炒雙脆", category: ["chef"], type: "名廚", date: "1月03日", img: "https://placehold.co/800x600/27ae60/fff?text=XO", stats: {time: "10分", cost: "$70", diff: "中"}, ranking: 9, desc: "鑊氣十足。", 
+                  ingredients: [{name:"蝦仁",amount:100,unit:"g"},{name:"花枝",amount:100,unit:"g"},{name:"XO醬",amount:2,unit:"大匙"}], 
+                  steps: [{t:"過油",c:"海鮮快速過油。"},{t:"快炒",c:"大火快炒加入XO醬。"}], tips: "火候要大，動作要快。", multiUse: [], comments: [] },
+                { id: 10, title: "金沙中卷", category: ["chef"], type: "名廚", date: "1月02日", img: "https://placehold.co/800x600/f1c40f/333?text=Squid", stats: {time: "15分", cost: "$65", diff: "中"}, ranking: 10, desc: "鹹蛋黃香氣。", 
+                  ingredients: [{name:"中卷",amount:2,unit:"隻"},{name:"鹹蛋黃",amount:3,unit:"顆"},{name:"蔥花",amount:10,unit:"g"}], 
+                  steps: [{t:"炸中卷",c:"中卷裹粉炸酥。"},{t:"炒金沙",c:"鹹蛋黃炒至起泡後裹上中卷。"}], tips: "鹹蛋黃要炒到起泡才香。", multiUse: [], comments: [] },
+                // Dummy IDs for Multi-Use Linking
+                { id: 101, title: "麻辣鍋底", category: ["all"], type: "延伸", date: "", img: "https://placehold.co/800x600/e74c3c/fff?text=Pot", stats: {time: "5分", cost: "$30", diff: "易"}, desc: "一醬成湯。", 
+                  ingredients: [{name:"高湯",amount:1000,unit:"ml"},{name:"麻辣醬",amount:3,unit:"大匙"}], steps: [{t:"煮湯",c:"混合煮滾即可。"}], tips: "", multiUse: [], comments: [] },
+                { id: 102, title: "口水雞", category: ["all"], type: "延伸", date: "", img: "https://placehold.co/800x600/d35400/fff?text=Chicken", stats: {time: "15分", cost: "$50", diff: "中"}, desc: "冷盤首選。", 
+                  ingredients: [{name:"雞肉",amount:1,unit:"份"},{name:"麻辣醬",amount:1,unit:"匙"}], steps: [{t:"淋醬",c:"醬料淋在雞肉上。"}], tips: "", multiUse: [], comments: [] },
+                { id: 103, title: "炒河粉", category: ["all"], type: "延伸", date: "", img: "https://placehold.co/800x600/2ecc71/fff?text=Noodle", stats: {time: "8分", cost: "$32", diff: "易"}, desc: "Q彈好吃。", 
+                  ingredients: [{name:"河粉",amount:200,unit:"g"},{name:"打拋醬",amount:1,unit:"匙"}], steps: [{t:"快炒",c:"大火炒勻。"}], tips: "", multiUse: [], comments: [] },
+                { id: 104, title: "涼拌海鮮", category: ["all"], type: "延伸", date: "", img: "https://placehold.co/800x600/3498db/fff?text=Seafood", stats: {time: "10分", cost: "$45", diff: "易"}, desc: "酸辣開胃。", 
+                  ingredients: [{name:"海鮮",amount:100,unit:"g"},{name:"打拋醬",amount:1,unit:"匙"}], steps: [{t:"拌勻",c:"所有材料拌勻。"}], tips: "", multiUse: [], comments: [] },
+            ],
+            info: [
+                { id: 101, title: "韓式發酵醬應用趨勢", category: "trend", date: "1月11日", isNew: true, img: "https://placehold.co/800x600/eee/333?text=Korean+Sauce",
+                  views: "1.2k", ranking: 1, tldr: ["可取代傳統醃料","成本降低30%"], 
+                  content: `<p>近年韓式料理風潮席捲全球，發酵醬料的獨特風味成為餐飲業的新寵。根據 2024 餐飲趨勢報告，使用發酵調味品的餐廳比傳統餐廳多出 35% 的回客率。</p>
+                            <img src="https://placehold.co/800x400/eee/333?text=Trend+Chart" style="width:100%;border-radius:8px;margin:16px 0;">
+                            <h3>為什麼選擇發酵醬？</h3>
+                            <p>韓式發酵醬的獨特之處在於其深層的鮮味（Umami），能為料理帶來豐富的層次感。不僅可以用於傳統韓式料理，如部隊鍋、石鍋拌飯，更能與西式料理結合，例如韓式辣醬義大利麵、泡菜起司漢堡等。</p>
+                            <p>對於餐廳經營者而言，使用現成的發酵醬料可以大幅縮短備料時間。傳統醃製過程往往需要數天甚至數週，而使用專業的發酵醬料，只需醃製數小時即可達到相同的風味深度。</p>
+                            <h3>成本效益分析</h3>
+                            <p>我們實測發現，使用康寶韓式辣醬取代傳統手工調製的醃料，可以節省約 30% 的食材成本，更重要的是節省了 50% 的人力工時。這在缺工嚴重的當下，是極具吸引力的解決方案。</p>
+                            <p>此外，發酵食品的健康形象也符合現代消費者對飲食的追求。富含益生菌的形象，讓菜單設計上更有行銷賣點。</p>
+                            <br><br><p>總結來說，引入韓式發酵醬不僅是口味上的創新，更是經營效率的提升。</p>` },
+                { id: 102, title: "雞粉取代高湯成本術", category: "manage", date: "1月08日", isNew: true, img: "https://placehold.co/800x600/333/fff?text=Chicken+Powder",
+                  views: "3.5k", ranking: 2, tldr: ["傳統熬湯費時","雞粉即沖即用"], content: "實測顯示..." }
+            ],
+            products: [ 
+                {name: "康寶鮮雞汁", img: "https://placehold.co/100/FFD700/333?text=Chicken"}, 
+                {name: "康寶麻辣醬", img: "https://placehold.co/100/FF5700/FFF?text=Spicy"}, 
+                {name: "康寶打拋醬", img: "https://placehold.co/100/00652B/FFF?text=Thai"} 
+            ],
+            sop: { id:999, title:"3步驟出餐 SOP", desc:"針對繁忙廚房設計。", steps:[{title:"免調味",text:"使用專業醬料"},{title:"預製",text:"統一規格"},{title:"快炒",text:"大火出餐"}] },
+            chef: { name:"江振誠", desc:"米其林二星主廚，擅長運用在地食材，將傳統川菜與現代技法結合。", img:"https://placehold.co/800x400/333/FFF?text=Chef+Andre" }
+        };
+
+        // --- Core Router ---
+        function router(page) {
+            document.querySelectorAll('.nav-item').forEach((el,i)=>el.classList.toggle('active', i===['home','info','scan','recipes','shop'].indexOf(page)));
+            const root = document.getElementById('app-root');
+            window.scrollTo(0,0);
+            if(page==='home') root.innerHTML = renderHeader(page)+renderHome();
+            else if(page==='info') root.innerHTML = renderHeader(page)+renderInfo();
+            else if(page==='recipes') root.innerHTML = renderHeader(page)+renderRecipes();
+            else if(page==='scan') renderScanPage();
+            else if(page==='shop') root.innerHTML = renderHeader(page)+renderShop();
+            else if(page==='profile') root.innerHTML = renderHeader(page)+renderProfile(); // New Route
+        }
+
+        function renderHeader(page) {
+            // Updated Top Nav with Profile Icon
+            let tabs = page==='home'? '' :
+                       page==='info'?renderTabs(['最新情報','經營管理','餐飲趨勢'],'info'):'';
+            const profileIcon = `<span class="material-symbols-outlined icon-btn" onclick="router('profile')">person</span>`;
+            
+            // Hide search/profile on Profile page for cleaner look, or keep them. keeping consistent.
+            return `<header><div class="header-top"><div class="search-bar"><span class="material-symbols-outlined">search</span>搜尋...</div><span class="material-symbols-outlined icon-btn">notifications</span>${profileIcon}</div>${tabs}</header>`;
+        }
+        function renderTabs(l,c) { return `<div class="tab-bar"><div class="scrolling-wrapper">${l.map((t,i)=>`<div class="tab-chip ${i===0?'active':''}" onclick="filterList(this,'${t}','${c}')">${t}</div>`).join('')}</div></div>`; }
+
+        // --- Pages ---
+        function renderHome() {
+            return `
+            <div class="fade-in">
+                <div style="padding:24px 16px 0;"><div style="font-size:12px;color:var(--primary);font-weight:700;">👋 早安，張主廚</div><div style="font-size:22px;font-weight:800;color:#333;">為你推薦：懶人食譜</div></div>
+                <div class="section-header"><div class="section-title"><span class="material-symbols-outlined" style="color:var(--secondary)">new_releases</span> 1月新菜上架</div></div>
+                <div class="card-scroll-container">${db.recipes.filter(r=>r.date.includes('1月')).map(r=>renderCardV(r,true)).join('')}</div>
+                <div class="section-header"><div class="section-title"><span class="material-symbols-outlined" style="color:#FFD700">emoji_events</span> 熱門排行</div></div>
+                <div style="margin:0 16px;"><div class="ranking-tabs"><div class="ranking-tab active" onclick="switchRanking(this,'recipe')">專業食譜</div><div class="ranking-tab" onclick="switchRanking(this,'info')">餐飲情報</div></div><div id="ranking-list">${renderRanking('recipe')}</div></div>
+                <div style="padding:24px 16px;"><div onclick="openSOP()" style="background:linear-gradient(135deg,#6A1B9A,#4A148C);border-radius:16px;padding:24px;color:white;display:flex;align-items:center;gap:16px;box-shadow:var(--shadow-md);cursor:pointer;"><span class="material-symbols-outlined" style="font-size:32px;">bolt</span><div><div style="font-weight:700;font-size:16px;">3步驟出餐 SOP</div><div style="font-size:12px;opacity:0.8;">午餐高峰救星</div></div></div></div>
+                <div class="section-header"><div class="section-title">精選推薦</div></div><div id="home-list" class="card-scroll-container">${db.recipes.map(r=>renderCardV(r)).join('')}</div>
+            </div>`;
+        }
+        function renderRecipes() {
+            return `
+                <div class="chef-banner fade-in" onclick="openChef()"><div style="z-index:1;"><div>米其林主廚</div><div style="font-size:20px;font-weight:800;margin-top:4px;">江振誠 獨家授權</div></div><span class="material-symbols-outlined" style="font-size:48px;">restaurant_menu</span></div>
+                <div class="strategy-cta-grid fade-in"><div class="strategy-btn btn-change" onclick="startWizard('change')"><div class="btn-icon-circle"><span class="material-symbols-outlined">restaurant_menu</span></div><span class="strategy-label">我要換菜</span><span class="strategy-sub">季節/節慶</span></div><div class="strategy-btn btn-fast" onclick="startWizard('fast')"><div class="btn-icon-circle"><span class="material-symbols-outlined">timer</span></div><span class="strategy-label">快速出餐</span><span class="strategy-sub">效率/SOP</span></div></div>
+                ${renderTabs(['全部','名廚專區','懶人包','低成本'],'recipes')}
+                <div id="recipe-list" class="recipe-grid fade-in">${db.recipes.map(r=>renderCardV(r)).join('')}</div>
+            `;
+        }
+        function renderInfo() { return `<div id="info-list" class="fade-in" style="padding-top:16px;">${db.info.map(i=>renderListCard(i)).join('')}</div>`; }
+        
+        // Task 4: Profile Page
+        function renderProfile() {
+            return `
+            <div class="fade-in">
+                <div class="profile-header">
+                    <div class="profile-user">
+                        <div class="profile-avatar">張</div>
+                        <div>
+                            <div style="font-size:20px;font-weight:700;">張大廚</div>
+                            <div style="font-size:14px;opacity:0.8;">金牌會員</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="profile-card">
+                    <div class="barcode-area">
+                        <div style="font-size:12px;color:#888;margin-bottom:8px;">會員條碼</div>
+                        <img class="barcode-img" src="https://bwipjs-api.metafloor.com/?bcid=code128&text=123456789&height=10&scale=2&includetext" alt="barcode">
+                    </div>
+                    <div class="menu-grid">
+                        <div class="menu-btn"><div class="menu-btn-icon"><span class="material-symbols-outlined">confirmation_number</span></div><div>票券夾</div></div>
+                        <div class="menu-btn"><div class="menu-btn-icon"><span class="material-symbols-outlined">favorite</span></div><div>我的菜單</div></div>
+                    </div>
+                </div>
+                <div class="support-btn" onclick="alert('開啟線上客服視窗')">
+                    <span class="material-symbols-outlined">support_agent</span> 聯繫線上客服
+                </div>
+            </div>`;
+        }
+
+        function renderScanPage() {
+            document.getElementById('app-root').innerHTML = `
+                <div class="scan-container fade-in">
+                    <div class="scan-controls"><div class="toggle-btn" onclick="this.querySelector('.toggle-switch').classList.toggle('on')">連續掃描模式 <div class="toggle-switch"></div></div></div>
+                    <div class="scan-viewfinder"><div class="scan-frame"></div><div class="toast" id="scan-toast"><span class="material-symbols-outlined">check_circle</span> 掃描成功 +50點</div><button onclick="simulateScan()" style="position:absolute;bottom:40px;background:rgba(255,255,255,0.2);color:white;border:1px solid rgba(255,255,255,0.5);padding:8px 16px;border-radius:20px;cursor:pointer;">模擬掃描</button></div>
+                    <div class="rewards-panel"><div class="progress-header"><span class="points-text">目前: 850點</span><span class="goal-text">差 150 點換 $100</span></div><div class="progress-track"><div class="progress-fill"></div></div><div style="font-size:14px;font-weight:700;margin-bottom:12px;">快速兌換 (v19)</div><div class="instant-rewards"><div class="reward-card">🏪 7-11</div><div class="reward-card">💬 Line Pts</div></div></div>
+                </div>`;
+        }
+        function renderShop() { return `<div style="text-align:center;padding:60px;color:#999;">商城載入中...</div>`; }
+
+        // --- Interaction ---
+        function filterList(el, filter, ctx) {
+            el.parentElement.querySelectorAll('.tab-chip').forEach(c=>c.classList.remove('active')); el.classList.add('active');
+            if(ctx==='recipes') {
+                const k = {'全部':'all','名廚專區':'chef','懶人包':'lazy','低成本':'low_cost'}[filter];
+                document.getElementById('recipe-list').innerHTML = db.recipes.filter(r=>k==='all'||r.category.includes(k)).map(r=>renderCardV(r)).join('');
+            } else if(ctx==='info') {
+                const k = {'最新情報':'all','經營管理':'manage','餐飲趨勢':'trend'}[filter];
+                document.getElementById('info-list').innerHTML = db.info.filter(i=>k==='all'||i.category===k).map(i=>renderListCard(i)).join('');
+            } 
+        }
+        function switchRanking(el, type) {
+            el.parentElement.querySelectorAll('.ranking-tab').forEach(c=>c.classList.remove('active')); el.classList.add('active');
+            document.getElementById('ranking-list').innerHTML = renderRanking(type);
+        }
+        function simulateScan() { document.getElementById('scan-toast').classList.add('show'); setTimeout(()=>document.getElementById('scan-toast').classList.remove('show'),2000); }
+
+        // --- Renderers ---
+        function renderCardV(r, badgeDate=false) {
+            return `<div class="card" onclick="openDetail('recipe',${r.id})"><div class="card-img-wrapper"><div class="card-badge" style="${badgeDate?'background:var(--secondary)':''}">${badgeDate?r.date:r.type}</div><img class="card-img" src="${r.img}"></div><div class="card-content"><div class="card-title">${r.title}</div><div class="card-meta"><span class="meta-tag">💰 ${r.stats.cost}</span><span class="meta-tag">⏱ ${r.stats.time}</span><span class="meta-tag">🔥 ${r.stats.diff}</span></div></div></div>`;
+        }
+        function renderListCard(i, rank) {
+            return `<div class="list-card" onclick="openDetail('info',${i.id})">${rank?`<div class="rank-badge rank-${rank}">${rank}</div>`:''}<div style="flex:1;"><div style="font-size:12px;color:var(--primary);font-weight:700;">#${i.category.toUpperCase()} ${i.isNew?'<span style="color:red;">● 新上架</span>':''}</div><div style="font-weight:700;margin-top:4px;">${i.title}</div><div style="font-size:12px;color:#888;">${i.views} 閱讀</div></div><img class="list-card-img" src="${i.img}"></div>`;
+        }
+        function renderRanking(type) {
+            const list = type==='recipe' ? db.recipes.slice(0,3) : db.info.slice(0,3);
+            if(type==='recipe') return list.map((r,i)=>`<div class="list-card" onclick="openDetail('recipe',${r.id})"><div class="rank-badge rank-${i+1}">${i+1}</div><div style="flex:1;margin-left:8px;"><div style="font-weight:700;">${r.title}</div><div style="font-size:12px;color:#666;">${r.desc}</div></div><img class="list-card-img" src="${r.img}"></div>`).join('');
+            return list.map((i,idx)=>renderListCard(i,idx+1)).join('');
+        }
+
+        // --- Task 1: Optimized Wizard Logic based on Flowchart ---
+        let wizardState = { type: null, step: 0, selections: [], path: null };
+        
+        function startWizard(type) { 
+            wizardState = { type, step: 0, selections: [], path: null }; 
+            document.getElementById('wizard-title').innerText = type === 'change' ? "我要換菜" : "快速出餐";
+            renderWizardStep(); 
+            document.getElementById('wizard-content').style.display = 'block'; 
+            document.getElementById('wizard-loading').style.display = 'none'; 
+            document.getElementById('wizard-overlay').style.display = 'flex'; 
+        }
+
+        function renderWizardStep() {
+            let q = "", o = [];
+            
+            // Logic based on Flowchart
+            if (wizardState.type === 'change') {
+                if (wizardState.step === 0) {
+                    q = "請問您想主打什麼？";
+                    o = ["季節限定", "節慶特餐"];
+                } else if (wizardState.step === 1) {
+                    if (wizardState.selections[0] === "季節限定") {
+                        q = "選擇月份";
+                        o = ["1~3月 (春)", "4~6月 (夏)", "7~9月 (秋)", "10~12月 (冬)"];
+                    } else {
+                        q = "選擇節慶";
+                        o = ["過年", "母親節", "端午節", "中秋節"];
+                    }
+                } else if (wizardState.step === 2) {
+                    q = "選擇核心食材";
+                    o = ["雞肉", "豬肉", "牛肉", "海鮮"];
+                } else if (wizardState.step === 3) {
+                    q = "選擇菜系風格";
+                    o = ["中式", "西式", "日式", "泰式"];
+                }
+            } else {
+                // Fast Prep Flow
+                if (wizardState.step === 0) {
+                    q = "目標出餐時間";
+                    o = ["3 分鐘內", "5 分鐘內", "10 分鐘內"];
+                } else if (wizardState.step === 1) {
+                    q = "現有烹調設備";
+                    o = ["快速爐", "蒸烤箱", "油炸鍋"];
+                }
+            }
+
+            document.getElementById('wizard-content').innerHTML = `
+                <div style="text-align:center;">
+                    <div style="font-size:20px;font-weight:700;margin-bottom:24px;">${q}</div>
+                    <div class="wizard-option-grid">${o.map(opt => `<div class="wizard-option" onclick="handleOptionClick('${opt}')">${opt}</div>`).join('')}</div>
+                </div>`; 
+            
+            // Calculate total steps based on current path
+            let totalSteps = wizardState.type === 'change' ? 4 : 2;
+            document.getElementById('wizard-progress').innerHTML = Array(totalSteps).fill(0).map((_,i)=>`<div class="progress-bar ${i<=wizardState.step?'active':''}"></div>`).join('');
+        }
+
+        function handleOptionClick(sel) { 
+            wizardState.selections.push(sel); 
+            let totalSteps = wizardState.type === 'change' ? 4 : 2;
+            
+            if (wizardState.step < totalSteps - 1) { 
+                wizardState.step++; 
+                renderWizardStep(); 
+            } else { 
+                document.getElementById('wizard-content').style.display = 'none'; 
+                document.getElementById('wizard-loading').style.display = 'block'; 
+                setTimeout(() => { closeWizard(); renderRecommendationResults(wizardState.selections); }, 1500); 
+            } 
+        }
+
+        function closeWizard() { document.getElementById('wizard-overlay').style.display = 'none'; }
+
+        function renderRecommendationResults(tags) {
+            document.getElementById('app-root').innerHTML = `
+                <header><div class="header-top"><span class="material-symbols-outlined icon-btn" onclick="router('recipes')">arrow_back</span><div style="flex:1;text-align:center;color:white;font-weight:700;">推薦結果</div><span style="width:24px;"></span></div></header>
+                <div class="result-context fade-in"><div class="result-context-title"><span class="material-symbols-outlined" style="font-size:18px;">auto_awesome</span> 為您推薦 10 道最佳方案</div><div class="result-chips">${tags.map(t => `<div class="result-chip">${t}</div>`).join('')}</div></div>
+                <div class="recipe-grid fade-in" style="padding-top:0;">${db.recipes.map(r => renderCardV(r)).join('')}</div>`;
+            window.scrollTo(0,0);
+        }
+
+        // --- Detail View Logic ---
+        let currentRecipe = null;
+        let currentPortion = 0;
+        let editingCommentIndex = -1;
+
+        function openDetail(type, id) {
+            const footerSlot = document.getElementById('detail-footer-slot');
+            document.getElementById('detail-view').style.display = 'block';
+            document.body.style.overflow = 'hidden';
+
+            if(type==='recipe') {
+                currentRecipe = db.recipes.find(x=>x.id===id) || db.recipes[0];
+                window.currentRecipeId = id;
+                currentPortion = currentRecipe.baseServings || 10;
+                
+                renderRecipeDetail(currentRecipe);
+                
+                footerSlot.innerHTML = `
+                    <div class="detail-footer fade-in">
+                        <button class="btn-outline" onclick="addToMenu()"><span class="material-symbols-outlined">post_add</span> 加入菜單</button>
+                        <button class="btn-primary" onclick="goToProduct()"><span class="material-symbols-outlined">shopping_cart_checkout</span> 領試用包</button>
+                    </div>`;
+            } else {
+                renderInfoDetail(db.info.find(x=>x.id===id));
+                footerSlot.innerHTML = '';
+            }
+        }
+
+        function renderRecipeDetail(r) {
+            document.getElementById('detail-img').src = r.img;
+            const ingHtml = generateIngredientList(r.ingredients, r.baseServings || 10, currentPortion);
+
+            const html = `
+                <div style="font-size:24px;font-weight:700;">${r.title}</div>
+                <div class="tag-row">${r.tags ? r.tags.map(t=>`<span class="detail-tag">${t}</span>`).join('') : ''}</div>
+                <div class="info-grid"><div class="info-box"><div class="info-label">成本</div><div class="info-value">${r.stats.cost}</div></div><div class="info-box"><div class="info-label">時間</div><div class="info-value">${r.stats.time}</div></div><div class="info-box"><div class="info-label">難度</div><div class="info-value">${r.stats.diff}</div></div></div>
+                
+                <h3 class="section-header-detail">所需材料 <span style="font-size:12px;color:#888;font-weight:400;margin-left:auto;">可依人數調整</span></h3>
+                
+                <div class="portion-control">
+                    <div class="portion-btn" onclick="updatePortion(-1)">-</div>
+                    <div class="portion-display">
+                        <span id="portion-val">${currentPortion}</span>
+                        <span class="portion-label">人份</span>
+                    </div>
+                    <div class="portion-btn" onclick="updatePortion(1)">+</div>
+                </div>
+
+                <div class="ing-group" id="ing-list">${ingHtml}</div>
+                
+                <h3 class="section-header-detail">烹調步驟</h3>
+                ${r.steps && r.steps.length > 0 ? r.steps.map((s,i)=>`<div class="step-row" style="margin-bottom:16px;display:flex;gap:12px;"><div class="step-idx" style="background:var(--primary);color:white;width:24px;height:24px;border-radius:50%;display:flex;justify-content:center;align-items:center;font-size:12px;flex-shrink:0;">${i+1}</div><div style="flex:1;"><div style="font-weight:700;margin-bottom:4px;">${s.t}</div><div style="color:#555;">${s.c}</div></div></div>`).join('') : '<div style="color:#999;">暫無步驟</div>'}
+                
+                <div style="background:#FFF3E0;padding:16px;border-radius:12px;margin:16px 0;display:flex;gap:12px;align-items:start;"><span class="material-symbols-outlined" style="color:#E65100">lightbulb</span> <div><strong>主廚 Tips：</strong> ${r.tips || "無"}</div></div>
+
+                ${r.multiUse && r.multiUse.length > 0 ?`<h3 class="section-header-detail">一醬多用</h3><div class="card-scroll-container">${r.multiUse.map(m=>`
+                    <div class="rp-card" onclick="openDetail('recipe', ${m.id})">
+                        <img class="rp-img" src="${m.img}">
+                        <div style="font-weight:700;font-size:13px;">${m.name}</div>
+                        <div style="color:var(--secondary);font-weight:700;font-size:12px;">${m.cost}</div>
+                    </div>`).join('')}</div>`:''}
+
+                <div class="comment-section">
+                    <div class="section-title" style="padding-left:0;">主廚評論區</div>
+                    <div id="comments-container">${renderComments(r.comments)}</div>
+                    <div class="comment-input-area">
+                        <input type="text" id="comment-input" class="comment-input" style="width:100%;border:none;background:transparent;outline:none;font-size:14px;" placeholder="分享您的試做心得...">
+                        <button class="btn-submit" id="btn-comment-submit" onclick="submitComment()"><span class="material-symbols-outlined" style="font-size:18px;">send</span></button>
+                    </div>
+                </div>
+
+                <h3 class="section-header-detail">推薦商品</h3>
+                <div class="product-rec-container">
+                    ${db.products.map(p=>`
+                        <div class="product-card-sm">
+                            <img src="${p.img}">
+                            <div style="font-weight:700;font-size:14px;">${p.name}</div>
+                            <span class="material-symbols-outlined" style="margin-left:auto;color:#ccc;">chevron_right</span>
+                        </div>
+                    `).join('')}
+                </div>`;
+            document.getElementById('detail-content').innerHTML = html;
+        }
+
+        function renderInfoDetail(i) {
+            document.getElementById('detail-img').src = i.img;
+            document.getElementById('detail-content').innerHTML = `<div style="font-size:22px;font-weight:700;margin-bottom:12px;">${i.title}</div><div style="line-height:1.8;">${i.content}</div>`;
+        }
+
+        // --- Logic: Ingredient Scaling ---
+        function updatePortion(delta) {
+            const newP = currentPortion + delta;
+            if(newP < 1) return;
+            currentPortion = newP;
+            document.getElementById('portion-val').innerText = currentPortion;
+            document.getElementById('ing-list').innerHTML = generateIngredientList(currentRecipe.ingredients, currentRecipe.baseServings || 10, currentPortion, true);
+        }
+
+        function generateIngredientList(ingredients, baseP, currP, animate=false) {
+            if (!ingredients || ingredients.length === 0) return '<div style="color:#999;">暫無食材資訊</div>';
+            return ingredients.map(ing => {
+                const newAmount = Math.round((ing.amount / baseP) * currP * 10) / 10;
+                return `
+                <div class="checkbox-item" onclick="this.querySelector('.checkbox-circle').classList.toggle('checked')">
+                    <div class="checkbox-left">
+                        <div class="checkbox-circle"></div>
+                        <span>${ing.name}</span>
+                    </div>
+                    <div class="ing-amount ${animate?'changed':''}">${newAmount} ${ing.unit}</div>
+                </div>`;
+            }).join('');
+        }
+
+        // --- Logic: Comments ---
+        function renderComments(comments) {
+            if(!comments||!comments.length) return '<div style="color:#999;font-size:13px;">尚無評論。</div>';
+            return comments.map((c,i) => `
+                <div class="comment-item">
+                    <div class="comment-avatar">${c.user[0]}</div>
+                    <div class="comment-body">
+                        <div class="comment-name">${c.user}</div>
+                        <div class="comment-meta"><span class="comment-stars">${'★'.repeat(c.star)}</span> <span>${c.date}</span></div>
+                        <div class="comment-text">${c.text}</div>
+                        <div class="comment-actions">
+                            ${c.user==='我'?`
+                                <div class="action-chip" onclick="editComment(${i})"><span class="material-symbols-outlined" style="font-size:14px;">edit</span> 編輯</div>
+                                <div class="action-chip" onclick="delCom(${i})"><span class="material-symbols-outlined" style="font-size:14px;">delete</span> 刪除</div>
+                            `:`<div class="action-chip"><span class="material-symbols-outlined" style="font-size:14px;">thumb_up</span> 有幫助</div>`}
+                        </div>
+                    </div>
+                </div>`).join('');
+        }
+
+        function submitComment() {
+            const input = document.getElementById('comment-input');
+            const txt = input.value.trim();
+            if(!txt) return;
+
+            const r = db.recipes.find(x=>x.id===window.currentRecipeId);
+            
+            if(editingCommentIndex > -1) {
+                r.comments[editingCommentIndex].text = txt;
+                r.comments[editingCommentIndex].date = "已編輯";
+                editingCommentIndex = -1;
+                document.getElementById('btn-comment-submit').classList.remove('editing');
+                document.getElementById('btn-comment-submit').innerHTML = '<span class="material-symbols-outlined" style="font-size:18px;">send</span>';
+            } else {
+                r.comments.unshift({user:"我",star:5,text:txt,date:"剛剛"});
+            }
+            input.value = '';
+            document.getElementById('comments-container').innerHTML = renderComments(r.comments);
+        }
+
+        function editComment(idx) {
+            const r = db.recipes.find(x=>x.id===window.currentRecipeId);
+            const comment = r.comments[idx];
+            document.getElementById('comment-input').value = comment.text;
+            document.getElementById('comment-input').focus();
+            editingCommentIndex = idx;
+            const btn = document.getElementById('btn-comment-submit');
+            btn.classList.add('editing');
+            btn.innerHTML = '<span class="material-symbols-outlined" style="font-size:18px;">check</span>';
+        }
+
+        function delCom(i) { 
+            if(confirm('確定要刪除留言？')) {
+                const r=db.recipes.find(x=>x.id===window.currentRecipeId); 
+                r.comments.splice(i,1); 
+                document.getElementById('comments-container').innerHTML=renderComments(r.comments); 
+                if(i === editingCommentIndex) {
+                    editingCommentIndex = -1;
+                    document.getElementById('comment-input').value = '';
+                    document.getElementById('btn-comment-submit').classList.remove('editing');
+                }
+            }
+        }
+
+        // --- Standard Logic ---
+        function addToMenu() { alert('已加入菜單！'); }
+        function goToProduct() { alert('前往相關商品頁面...'); }
+
+        function openSOP() {
+            const s = db.sop;
+            document.getElementById('detail-img').src = s.img;
+            document.getElementById('detail-content').innerHTML = `<div style="font-size:24px;font-weight:700;">${s.title}</div><div style="background:#F3E5F5;padding:16px;border-radius:12px;margin:16px 0;color:#4A148C;">${s.desc}</div>${s.steps.map((st,i)=>`<div style="margin-bottom:16px;"><div style="font-weight:700;">${i+1}. ${st.title}</div><div style="font-size:13px;color:#666;">${st.text}</div></div>`).join('')}`;
+            document.getElementById('detail-footer-slot').innerHTML = ''; 
+            document.getElementById('detail-view').style.display='block';
+        }
+
+        function openChef() {
+            const c = db.chef;
+            document.getElementById('detail-img').src = c.img;
+            // Filter all chef recipes
+            const chefRecipes = db.recipes.filter(r => r.type === '名廚');
+            document.getElementById('detail-content').innerHTML = `
+                <div style="font-size:24px;font-weight:700;">${c.name}</div>
+                <div style="margin-top:16px;color:#555;">${c.desc}</div>
+                <h3 class="section-header-detail">主廚推薦食譜 (${chefRecipes.length})</h3>
+                <div class="recipe-grid" style="padding:0;">${chefRecipes.map(r=>renderCardV(r)).join('')}</div>`;
+            document.getElementById('detail-footer-slot').innerHTML = ''; 
+            document.getElementById('detail-view').style.display='block';
+        }
+
+        function closeDetail() { document.getElementById('detail-view').style.display = 'none'; document.body.style.overflow = 'auto'; }
+        function updateProgress() { const el = document.getElementById('detail-view'); document.getElementById('read-progress').style.width = (el.scrollTop / (el.scrollHeight - el.clientHeight)) * 100 + '%'; }
+
+        router('home');
+    </script>
+</body>
+</html>
